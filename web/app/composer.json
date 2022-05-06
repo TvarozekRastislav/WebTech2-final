@@ -1,0 +1,21 @@
+{
+  "require": {
+    "symfony/yaml": "^5.1",
+    "vlucas/phpdotenv": "^5.3"
+  },
+  "require-dev": {
+    "phpmd/phpmd": "@stable",
+    "phpunit/phpunit": "^9.0",
+    "squizlabs/php_codesniffer": "3.5.*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\Model\\": "src/model/",
+      "App\\Controller\\": "src/controller/",
+      "App\\Helper\\": "src/helper/",
+      "Dotenv\\": "vendor/vlucas/phpdotenv/src/"
+    }
+  },
+  "minimum-stability": "stable",
+  "prefer-stable": true
+}
