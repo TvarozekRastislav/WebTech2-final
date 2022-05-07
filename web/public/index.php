@@ -4,7 +4,6 @@
 
 <head>
     <meta charset="utf-8">
-
     <title>Zadanie final</title>
     <meta name="description" content="The HTML5 Herald">
     <meta name="author" content="SitePoint">
@@ -24,10 +23,13 @@
 <body>
     <h1>OH</h1>
 
+
     <?php
-    $output;
-    exec("octave-cli --eval 1+1", $output);
-    var_dump($output);
+    require_once "../app/API/ScriptCalculation.php";
+    $script_runner=new ScriptCalculation();
+    $lines = file('../app/Octave/output_Y.txt', FILE_IGNORE_NEW_LINES);
+    $data=$script_runner->handleOutputT();
+
 
     $conn = null;
     try {
@@ -45,5 +47,4 @@
     ?>
 
 </body>
-
 </html>
