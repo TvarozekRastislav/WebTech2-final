@@ -25,11 +25,6 @@
 
 
     <?php
-    require_once "../app/API/ScriptCalculation.php";
-    $script_runner=new ScriptCalculation();
-    $lines = file('../app/Octave/output_Y.txt', FILE_IGNORE_NEW_LINES);
-    $data=$script_runner->handleOutputT();
-
 
     $conn = null;
     try {
