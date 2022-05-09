@@ -7,7 +7,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
     case "GET":
         header("HTTP/1.1 200 OK");
         if (isset($_GET['acces_token']) && !empty($_GET['r'])) {//kontrola tokenu a hodnoty r
-            if ($_GET['acces_token'] == $acces_token && is_float($_GET['r'])) {
+            if ($_GET['acces_token'] == $acces_token && is_float(floatval($_GET['r']))) {
                 $r = $_GET['r'];
                 $script_runner = new ScriptCalculation();
                 $dataT = $script_runner->handleOutputT($r);
@@ -17,7 +17,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $jsonDataT = json_encode($dataT);
                 $jsonDataY = json_encode($dataY);
                 $jsonDataX = json_encode($dataX);
-                echo $jsonDataX;
             } else {
                 if ($_GET['acces_token'] != $acces_token) {            //ak je chyba na strane tokenu pri zadavani hodnoty r
                     $err = "Wrong access token!";
