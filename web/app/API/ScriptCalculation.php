@@ -39,5 +39,4 @@ class ScriptCalculation             //odtialto sa tahaju metody pre ziskavanie d
         }
         return $to_return;
     }
-
 }

@@ -22,10 +22,7 @@
 
 <body>
     <h1>OH</h1>
-
-
     <?php
-
     $conn = null;
     try {
         $conn = new PDO("mysql:host=" .  "mysql" . ";dbname=" . "final", "user", "user");
@@ -39,6 +36,7 @@
     }
     echo "<br>";
     echo (exec("pwd"));
+
     ?>
 
 </body>
