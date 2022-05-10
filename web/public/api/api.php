@@ -1,6 +1,6 @@
 <?php
-require_once "../config.php";
-require_once "../app/API/ScriptCalculation.php";
+require_once "../../config.php";
+require_once "../../app/api/ScriptCalculation.php";
 header('Content-Type: application/json; charset=utf-8');
 
 switch ($_SERVER['REQUEST_METHOD']) {
@@ -48,7 +48,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 unset($_GET['prikaz']);
             }
         } else {
-            if ($_GET['acces_token'] != $acces_token) {        //ak je chyba na strane tokenu pri zadavani hodnoty r
+            if (isset($_GET['acces_token']) != $acces_token) {        //ak je chyba na strane tokenu pri zadavani hodnoty r
                 $err = "Wrong access token!";
                 $json_err = json_encode($err);
             } else {                                          //ak je problem s inputom
@@ -58,13 +58,3 @@ switch ($_SERVER['REQUEST_METHOD']) {
         }
 }
 ?>
-<!DOCTYPE html>
-<html lang="SK">
-<head>
-    <meta charset="UTF-8">
-    <title>Formulár</title>
-</head>
-<body>
-
-</body>
-</html>
