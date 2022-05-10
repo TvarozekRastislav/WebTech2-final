@@ -1,11 +1,11 @@
 <?php
 require_once "../../config.php";
 require_once "../../app/api/ScriptCalculation.php";
-header('Content-Type: application/json; charset=utf-8');
+//header('Content-Type: application/json; charset=utf-8');
 
 switch ($_SERVER['REQUEST_METHOD']) {
+
     case "GET":
-        header("HTTP/1.1 200 OK");
         if (isset($_GET['acces_token']) && !empty($_GET['r'])) {//kontrola tokenu a hodnoty r
             if ($_GET['acces_token'] == $acces_token && is_float(floatval($_GET['r']))) {
                 $r = $_GET['r'];
@@ -17,6 +17,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $jsonDataT = json_encode($dataT);
                 $jsonDataY = json_encode($dataY);
                 $jsonDataX = json_encode($dataX);
+                header("HTTP/1.1 200 OK");
             } else {
                 if ($_GET['acces_token'] != $acces_token) {            //ak je chyba na strane tokenu pri zadavani hodnoty r
                     $err = "Wrong access token!";
@@ -33,10 +34,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
             if ($_GET['acces_token'] == $acces_token) {
                 $command = urldecode($_GET['prikaz']);
                 $command=str_replace(" ","+",$command);
-                echo $command;
+                header("HTTP/1.1 200 OK");
+                //echo $command;
                 $scriptRunner = new ScriptCalculation();
                 $o = $scriptRunner->runOctaveCommand($command);
                 $check = implode($o[0]);
+
                 if (str_contains($check, "err")) {
                     $json_cmd_err = json_encode($check);        //ak nastane nejaky error pri zadani octave commandu pouzivatelom padne to sem a v $check
                     echo $json_cmd_err;                                                   //je popis erroru ktory treba ulozit do DB
@@ -48,12 +51,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 unset($_GET['prikaz']);
             }
         } else {
-            if (isset($_GET['acces_token']) != $acces_token) {        //ak je chyba na strane tokenu pri zadavani hodnoty r
-                $err = "Wrong access token!";
-                $json_err = json_encode($err);
-            } else {                                          //ak je problem s inputom
-                $wrong_input = "Wrong input!";
-                $json_err = json_encode($wrong_input);
+            if (isset($_GET['acces_token'])) {
+                if ($_GET['acces_token'] != $acces_token) {        //ak je chyba na strane tokenu pri zadavani hodnoty r
+                    $err = "Wrong access token!";
+                    $json_err = json_encode($err);
+                } else {                                          //ak je problem s inputom
+                    $wrong_input = "Wrong input!";
+                    $json_err = json_encode($wrong_input);
+                }
             }
         }
 }
