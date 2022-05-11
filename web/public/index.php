@@ -29,7 +29,56 @@
     <script src="js/script.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#submitCasFormButton").click(function(){
+                console.log("wiiii");
+                let req = $("#requirement").val();
+                console.log(req);
+                $.ajax({
+                    type: 'GET',
+                    data: {acces_token: "kiRkR15MBEypq7Che", prikaz: req},
+                    url: "../api/api.php",
+                    dataType: "json",
+                    success: function(result) {
+                        console.log(result);
+                        let output;
+                        if(result.err != undefined){
+                            output = (result.err).replace("err = ", "").replaceAll("\"", "");
+                            console.log(output);
+                        } else{
+                            output = (result.ans).replace("ans = ", "").replaceAll("\"", "");
+                            console.log(output);
+                        }
+                        $("#outputForm").html(output);
 
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest.status);
+                    }
+                });
+            })
+
+            $("#submitPlotButton").click(function(){
+                console.log("wiiii2");
+                let obstacleHeight = $("#obstacleHeight").val();
+                console.log(obstacleHeight);
+                $.ajax({
+                    type: 'GET',
+                    data: {acces_token: "kiRkR15MBEypq7Che", r: obstacleHeight},
+                    url: "../api/api.php",
+                    dataType: "json",
+                    success: function(result) {
+                        console.log(result);
+
+                    },
+                    error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log(XMLHttpRequest.status);
+                    }
+                });
+            })
+        })
+    </script>
 </head>
 
 <body id="page-top">
@@ -90,7 +139,7 @@
                     <form id="casForm">
                         <div class="form-floating mb-3">
                             <textarea class="form-control" id="requirement" type="text"
-                                      placeholder="Sem napíšte príkaz ..." style="height: 10rem"></textarea>
+                                      placeholder="Sem napíšte príkaz ..." style="height: 7rem"></textarea>
                             <label for="requirement">Zadajte príkaz</label>
 <!--                            <div class="invalid-feedback" data-sb-feedback="requirement:required">Toto pole je povinné</div>-->
                         </div>
@@ -100,7 +149,6 @@
                 </div>
                 <div class="col-lg-8 col-xl-7 pt-5" id="outputFormContainer">
                     <div class="border-bottom border-grey border-1 rounded-1 text-black p-3" id="outputForm">
-                            9
                     </div>
                 </div>
             </div>
@@ -137,7 +185,7 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-lg" id="submitPlotButton" type="submit">Odoslať</button>
+                        <button class="btn btn-primary btn-lg" id="submitPlotButton" type="button">Odoslať</button>
                     </form>
                 </div>
             </div>
