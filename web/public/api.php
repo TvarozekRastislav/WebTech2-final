@@ -14,9 +14,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $dataY = $script_runner->handleOutput_Y($r);
                 $dataX = $script_runner->handleOutput_X($r);
                 unset($_POST['r']);
+                $json_all=[];
                 $jsonDataT = json_encode($dataT);
                 $jsonDataY = json_encode($dataY);
                 $jsonDataX = json_encode($dataX);
+                array($json_all['T'],$jsonDataT);
+                echo $json_all;
+
             } else {
                 if ($_GET['acces_token'] != $acces_token) {            //ak je chyba na strane tokenu pri zadavani hodnoty r
                     $err = "Wrong access token!";
