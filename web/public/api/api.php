@@ -1,7 +1,7 @@
 <?php
 require_once "../../config.php";
 require_once "../../app/api/ScriptCalculation.php";
-//header('Content-Type: application/json; charset=utf-8');
+header('Content-Type: application/json; charset=utf-8');
 
 switch ($_SERVER['REQUEST_METHOD']) {
 
