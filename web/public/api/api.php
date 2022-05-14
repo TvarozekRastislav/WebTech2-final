@@ -1,5 +1,6 @@
 <?php
 require_once "../../config.php";
+require_once "../../app/src/helper/Database.php";
 require_once "../../app/api/ScriptCalculation.php";
 header('Content-Type: application/json; charset=utf-8');
 
@@ -30,6 +31,11 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 }
             }
         }
+        //UKLADANIE LOGOV DO DB
+        $db= (new App\Helper\Database)->getConnection();
+        $stmt = $db->prepare("INSERT INTO requirements(command,info,mistake_info)VALUES(:command,:info,:mistake_info)");
+        $info="OK";
+        $mistake_info=null;
         // KOD PRE HOCIJAKY PRIKAZ Z OCTAVE
         if (isset($_GET['acces_token']) && !empty($_GET['prikaz'])) {
             //kontrola tokenu a ci bol prikaz zadany
@@ -38,6 +44,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $command = str_replace(" ", "+", $command);
                 header("HTTP/1.1 200 OK");
                 //echo $command;
+                $stmt->bindParam(":command", $command);
                 $scriptRunner = new ScriptCalculation();
                 $o = $scriptRunner->runOctaveCommand($command);
                 $check = implode($o[0]);
@@ -46,11 +53,14 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     $json_cmd_err = json_encode($check);
                     $json_error = array("err" =>  $json_cmd_err);//ak nastane nejaky error pri zadani octave commandu pouzivatelom padne to sem a v $check
                     $json_error =json_encode($json_error);
+                    $info="ERROR";
+                    $mistake_info="Wrong command input";
                     echo $json_error;                                                   //je popis erroru ktory treba ulozit do DB
                 } else {
                     $json_message = json_encode($check);        //ak je vsetko OK padne to sem a vypíše vysledok prikazu toto asi este prerobim nejako aby to pekne vypisalo niekde na stranku
                     $json_ans=array("ans" =>  $json_message);
                     $json_ans=json_encode($json_ans);
+                    $info="OK";
                     echo $json_ans;
                 }
                 unset($_GET['prikaz']);
@@ -60,14 +70,22 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     if ($_GET['acces_token'] != $acces_token) {        //ak je chyba na strane tokenu pri zadavani hodnoty r
                         $err = array("err"=>json_encode("Wrong access token!"));
                         $err=json_encode($err);
+                        $info="ERROR";
+                        $mistake_info="Wrong access token";
                         echo $err;
                     } else {                                          //ak je problem s inputom
                         $err = array("err"=>json_encode("Wrong input!"));
                         $err=json_encode($err);
+                        $info="ERROR";
+                        $mistake_info="Input error";
+
                         echo $err;
                     }
                 }
             }
         }
+        $stmt->bindParam(":info", $info);
+        $stmt->bindParam(":mistake_info", $mistake_info);
+        $stmt->execute();
 }
 ?>
