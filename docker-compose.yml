@@ -53,7 +53,11 @@ services:
             - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
             - MYSQL_USER=${MYSQL_USER}
             - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+            - TZ=Europe/Bratislava
         ports:
             - "8989:3306"
         volumes:
             - "./data/db/mysql:/var/lib/mysql"
+        command: ['mysqld','--default-time-zone=+02:00']
+
+
