@@ -1,9 +1,9 @@
 FROM php:8.1-fpm
 
-LABEL maintainer="Vincent Letourneau <vincent@nanoninja.com>"
 
 RUN apt-get update && apt-get upgrade -y \
     && apt-get install -y \
+    git \
     g++ \
     libbz2-dev \
     libc-client-dev \
@@ -67,3 +67,7 @@ RUN apt-get update && apt-get upgrade -y \
     && apt-get autoremove --purge -y && apt-get autoclean -y && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/* /var/tmp/*
+
+ENV TZ=Europe/Bratislava
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+

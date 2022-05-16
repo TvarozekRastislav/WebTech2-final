@@ -13,6 +13,4 @@ endpoint:  /api/?r={height}&acces_token={token}
 method: GET
 description: Get data T,X,Y for animation.
 returns: JSON
-return body for T:  []
-return body for X:  [[],[],[]....]
-return body for Y:  []
+return body{"dataT":[],"dataX":[],"dataY":[]}
