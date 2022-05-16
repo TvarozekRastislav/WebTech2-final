@@ -2,6 +2,8 @@
 require_once "../../config.php";
 require_once "../../app/src/helper/Database.php";
 require_once "../../app/api/ScriptCalculation.php";
+
+
 header('Content-Type: application/json; charset=utf-8');
 
 switch ($_SERVER['REQUEST_METHOD']) {
@@ -48,7 +50,6 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $scriptRunner = new ScriptCalculation();
                 $o = $scriptRunner->runOctaveCommand($command);
                 $check = implode($o[0]);
-
                 if (str_contains($check, "err")) {
                     $json_cmd_err = json_encode($check);
                     $json_error = array("err" =>  $json_cmd_err);//ak nastane nejaky error pri zadani octave commandu pouzivatelom padne to sem a v $check

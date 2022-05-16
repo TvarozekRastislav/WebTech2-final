@@ -7,10 +7,10 @@ use Dotenv;
 //$dotenv->load();
 use PDO;
 use PDOException;
-
 class Database {
 
     private $conn;
+
 
     public function getConnection(){
         $this->conn = null;
@@ -28,4 +28,7 @@ class Database {
         }
         return $this->conn;
     }
+
+
+
 }
