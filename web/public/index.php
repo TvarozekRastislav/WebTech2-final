@@ -29,10 +29,126 @@
     <script src="js/script.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="js/chart.js"></script>
+    <style>
+        .popover-danger {
+            background-color: #d9534f;
+            border-color: #d43f3a;
+        }
+
+        .popover-danger p{
+            color: white;
+        }
+
+        .popover-danger .popover-arrow:after{
+            border-bottom-color: #d9534f;
+        }
+    </style>
+
     <script>
         $(document).ready(function(){
+            const data = {
+                datasets: [
+                    {
+                        borderColor: '#FF8C00',
+                        data: [],
+                        label: 'Wheel',
+                        pointRadius: 0,
+                        backgroundColor: '#FF8C00',
+                        tension: 0.4,
+                    },
+                    {
+                        borderColor: '#1C90EA',
+                        data: [],
+                        label: 'Car',
+                        pointRadius: 0,
+                        backgroundColor: '#1C90EA',
+                        tension: 0.4,
+                    }
+                ]
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    spanGaps: true,
+                    animation: false,
+                    scales: {
+                        x: {
+                            min: 0,
+                            // ticks: {
+                            //     stepSize: 1
+                            // }
+                        },
+                        y: {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                }
+            };
+
+
+            const myChart = new Chart($("#myChart"), config);
+
+            function addData(chart, label, data1, data2) {
+                chart.data.labels.push(label);
+                chart.data.datasets[0].data.push(data1);
+                chart.data.datasets[1].data.push(data2);
+                chart.update();
+            }
+
+            function getCarY(len, dataX){
+                let result = []
+                for(let i = 0; i < len; i++){
+                    result.push(dataX[i][0]);
+                }
+                return result;
+            }
+
+            $("#outputForm").hide();
+
+            $("#obstacleHeight").popover({
+                placement : 'bottom',
+                animation: true,
+                delay: { "show": 300, "hide": 100 },
+                html : true,
+                trigger : 'manual',
+                content: "<button class='close'>&times</button> " +
+                    "<p class = 'text-center'>Výška prekážka musí byť číselná ! <p>"
+            });
+
+            $("#casDiv").popover({
+                placement : 'bottom',
+                animation: true,
+                delay: { "show": 300, "hide": 100 },
+                html : true,
+                trigger : 'manual',
+                content: "<button class='close'>&times</button> " +
+                    "<p class = 'text-center'>Príkaz nie je zadaný v správnom formáte ! <p>"
+            });
+
+            $('#obstacleHeight').bind('input propertychange', function() {
+                let req = $("#obstacleHeight").val();
+                if(req === ""){
+                    $('#obstacleHeight').popover('hide');
+                    $("#obstacleHeight").removeClass("border-danger");
+                    $("#obstacleHeight").removeClass("text-danger");
+                }
+            });
+
+            $('#requirement').bind('input propertychange', function() {
+                let req = $("#requirement").val();
+                if(req === ""){
+                    $('#casDiv').popover('hide');
+                    $("#requirement").removeClass("border-danger");
+                    $("#requirement").removeClass("text-danger");
+                }
+            });
+
             $("#submitCasFormButton").click(function(){
-                console.log("wiiii");
                 let req = $("#requirement").val();
                 console.log(req);
                 $.ajax({
@@ -42,40 +158,93 @@
                     dataType: "json",
                     success: function(result) {
                         console.log(result);
-                        let output;
-                        if(result.err != undefined){
+                        let output = null;
+                        let ok = false;
+                        if(result.err !== undefined){
                             output = (result.err).replace("err = ", "").replaceAll("\"", "");
-                            console.log(output);
+                            ok = true;
                         } else{
                             output = (result.ans).replace("ans = ", "").replaceAll("\"", "");
-                            console.log(output);
+                            ok = true;
                         }
-                        $("#outputForm").html(output);
+                        if(true){
+                            if(output === ""){
+                                $("#requirement").addClass("border-danger");
+                                $("#requirement").addClass("text-danger");
+                                $('#casDiv').popover('show');
+                                $('.popover').addClass('popover-danger');
+                            } else {
+                                $("#outputForm").show();
+                                $('#casDiv').popover('hide');
+                                $("#requirement").removeClass("border-danger");
+                                $("#requirement").removeClass("text-danger");
+                                $("#outputForm").html(output);
+                            }
+                        }
+
 
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
                         console.log(XMLHttpRequest.status);
                     }
                 });
-            })
+            });
+
 
             $("#submitPlotButton").click(function(){
-                console.log("wiiii2");
+                let ok = false;
                 let obstacleHeight = $("#obstacleHeight").val();
+                obstacleHeight = obstacleHeight.replace(",", ".");
                 console.log(obstacleHeight);
-                $.ajax({
-                    type: 'GET',
-                    data: {acces_token: "kiRkR15MBEypq7Che", r: obstacleHeight},
-                    url: "../api/api.php",
-                    dataType: "json",
-                    success: function(result) {
-                        console.log(result);
+                let float = /^\s*(\+|-)?((\d+(\.\d+)?)|(\.\d+))\s*$/;
+                if(float.test(obstacleHeight)){
+                    ok = true;
+                    $('#casDiv').popover('hide');
+                } else {
+                    $("#obstacleHeight").addClass("border-danger");
+                    $("#obstacleHeight").addClass("text-danger");
+                    $('#obstacleHeight').popover('show');
+                    $('.popover').addClass('popover-danger');
+                }
 
-                    },
-                    error: function(XMLHttpRequest, textStatus, errorThrown) {
-                        console.log(XMLHttpRequest.status);
-                    }
-                });
+                if(ok){
+                    $.ajax({
+                        type: 'GET',
+                        data: {acces_token: "kiRkR15MBEypq7Che", r: obstacleHeight},
+                        url: "../api/api.php",
+                        dataType: "json",
+                        success: function(result) {
+                            if($('#checkBoxPlot').attr('checked')){
+                                $("#chartDiv").removeClass("d-none");
+                                let X_axis = result.dataT;
+                                let Y_axis_car = result.dataY;
+                                let Y_axis_wheel= getCarY(Y_axis_car.length, result.dataX);
+
+
+                                for(let i = 0; i < Y_axis_wheel.length ; i++){
+                                    (function(index) {
+                                        setTimeout(function() {
+                                            addData(myChart, i/100, Y_axis_wheel[i], Y_axis_car[i]);
+                                        }, X_axis[i]/10);
+                                    })(i);
+                                }
+                            } else {
+                                $("#chartDiv").addClass("d-none");
+                            }
+
+                            if($('#checkBoxAnimation').attr('checked')){
+                                $("#animationDiv").removeClass("d-none");
+                            } else {
+                                $("#animationDiv").addClass("d-none");
+                            }
+
+                        },
+                        error: function(XMLHttpRequest, textStatus, errorThrown) {
+                            console.log(XMLHttpRequest.status);
+                        }
+                    });
+                }
+
             })
         })
     </script>
@@ -137,17 +306,16 @@
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="casForm">
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-3" id = "casDiv">
                             <textarea class="form-control" id="requirement" type="text"
-                                      placeholder="Sem napíšte príkaz ..." style="height: 7rem"></textarea>
+                                      placeholder="Sem napíšte príkaz ..." style="height: 6rem"></textarea>
                             <label for="requirement">Zadajte príkaz</label>
-<!--                            <div class="invalid-feedback" data-sb-feedback="requirement:required">Toto pole je povinné</div>-->
                         </div>
 
                         <button class="btn btn-primary btn-lg" id="submitCasFormButton" type="button">Vypočítať</button>
                     </form>
                 </div>
-                <div class="col-lg-8 col-xl-7 pt-5" id="outputFormContainer">
+                <div class="col-lg-8 col-xl-7 pt-5 lead" id="outputFormContainer">
                     <div class="border-bottom border-grey border-1 rounded-1 text-black p-3" id="outputForm">
                     </div>
                 </div>
@@ -164,19 +332,19 @@
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="animationForm" class="text-sm">
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="obstacleHeight" type="number"
+                            <input class="form-control" id="obstacleHeight" type="text"
                                       placeholder="Sem napíšte výšku prekážky ..."/>
-                            <label for="obstacleHeight">Zadajte výšku prekážky (v cm)</label>
+                            <label for="obstacleHeight">Zadajte výšku prekážky (v m)</label>
                             <div class="invalid-feedback" data-sb-feedback="obstacleHeight:required">Toto pole je povinné</div>
                             <div class="d-flex flex-row justify-content-start align-items-center pt-4">
                                 <div class="form-check me-5">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked>
+                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot" checked>
                                     <label class="form-check-label" for="flexCheckDefault">
                                         <small>Vykreslenie grafu</small>
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxAnimation">
                                     <label class="form-check-label" for="flexCheckChecked">
                                         <small>Vykreslenie animácie</small>
                                     </label>
@@ -187,6 +355,14 @@
 
                         <button class="btn btn-primary btn-lg" id="submitPlotButton" type="button">Odoslať</button>
                     </form>
+                    <div class = "d-none" id = "chartDiv">
+                        <canvas id="myChart"></canvas>
+                    </div>
+
+                    <div class = "d-none" id = "animationDiv">
+
+                    </div>
+
                 </div>
             </div>
         </div>
