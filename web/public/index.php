@@ -157,29 +157,29 @@
                     url: "../api/api.php",
                     dataType: "json",
                     success: function(result) {
-                        console.log(result);
                         let output = null;
                         let ok = false;
                         if(result.err !== undefined){
                             output = (result.err).replace("err = ", "").replaceAll("\"", "");
-                            ok = true;
+                            ok = false;
                         } else{
                             output = (result.ans).replace("ans = ", "").replaceAll("\"", "");
                             ok = true;
                         }
-                        if(true){
-                            if(output === ""){
-                                $("#requirement").addClass("border-danger");
-                                $("#requirement").addClass("text-danger");
-                                $('#casDiv').popover('show');
-                                $('.popover').addClass('popover-danger');
-                            } else {
-                                $("#outputForm").show();
-                                $('#casDiv').popover('hide');
-                                $("#requirement").removeClass("border-danger");
-                                $("#requirement").removeClass("text-danger");
-                                $("#outputForm").html(output);
-                            }
+                        console.log(output);
+                        if((ok && output === "") || !ok){
+                            $("#outputForm").hide();
+                            $("#requirement").addClass("border-danger");
+                            $("#requirement").addClass("text-danger");
+                            $('#casDiv').popover('show');
+                            $('.popover').addClass('popover-danger');
+                        }
+                        else if(ok){
+                            $("#outputForm").show();
+                            $('#casDiv').popover('hide');
+                            $("#requirement").removeClass("border-danger");
+                            $("#requirement").removeClass("text-danger");
+                            $("#outputForm").html(output);
                         }
 
 
