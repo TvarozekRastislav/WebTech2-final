@@ -39,6 +39,7 @@ let y1_line;
 let y2_line;
 
 let ok = false;
+let tmp = 0;
 
 window.addEventListener('resize', resizeAll, false);
 
@@ -150,7 +151,7 @@ function roundToOne(num) {
 }
 
 function test (obstacleHeight, time, y_wheel, y_car, y_wheel_prev, y_car_prev){
-    clear();
+    //clear();
     if(y_wheel !== undefined){
 
         if(x1_stop - 1 < 0)
@@ -171,17 +172,17 @@ function test (obstacleHeight, time, y_wheel, y_car, y_wheel_prev, y_car_prev){
         if(wheel_2_center_y-wheel_1_center_y > 0)
             rotationDegrees = -rotationDegrees;
 
-        if(roundToOne(Math.abs(Math.abs(x1_stop-wheel_2_center_x)-(radius/2))) < 0.9){
+        if(roundToOne(Math.abs(Math.abs(x1_stop-wheel_2_center_x)-(radius_tires/2))) < 1){
             ok = true;
         }
-
 
         if(Math.abs(roundToOne(rotationDegrees)) === 0 || ok === true){
             shift_x = 0;
             shift_y = -car_jump;
-        } else {
-            shift_x = - wheel_jump*1.8;
-            shift_y = -car_jump +wheel_jump*2;
+        }
+        else {
+            shift_x = - wheel_jump - wheel_jump_2;
+            shift_y = -car_jump + wheel_jump_2;
         }
 
         //clear();
