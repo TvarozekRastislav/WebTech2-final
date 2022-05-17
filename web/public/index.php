@@ -1,20 +1,3 @@
-<?php
-//$conn = null;
-//try {
-//    $conn = new PDO("mysql:host=" .  "mysql" . ";dbname=" . "final", "user", "user");
-//    $conn->exec("set names utf8");
-//    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-//} catch (PDOException $exception) {
-//    echo "Database could not be connected: " . $exception->getMessage();
-//}
-//if ($conn) {
-//    echo "connected";
-//}
-//echo "<br>";
-//echo (exec("pwd"));
-//
-//?>
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -30,6 +13,9 @@
     <script src="js/bootstrap.bundle.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="js/chart.js"></script>
+    <script src="js/p5.js"></script>
+    <script src="js/animation.js"></script>
+
     <style>
         .popover-danger {
             background-color: #d9534f;
@@ -46,6 +32,8 @@
     </style>
 
     <script>
+        let timeoutFunc;
+        let y_time = 0;
         $(document).ready(function(){
             const data = {
                 datasets: [
@@ -76,12 +64,21 @@
                     animation: false,
                     scales: {
                         x: {
+                            title:{
+                                display: true,
+                                text: "s",
+                                align: "end",
+
+                            },
                             min: 0,
-                            // ticks: {
-                            //     stepSize: 1
-                            // }
                         },
                         y: {
+                            title:{
+                                display: true,
+                                text: "m",
+                                align: "end",
+                            },
+
                             ticks: {
                                 beginAtZero: true
                             }
@@ -90,13 +87,27 @@
                 }
             };
 
-
             const myChart = new Chart($("#myChart"), config);
+
+            function clearChart(){
+                myChart.clear();
+            }
+
+            function roundToTwo(num) {
+                return +(Math.round(num + "e+2")  + "e-2");
+            }
 
             function addData(chart, label, data1, data2) {
                 chart.data.labels.push(label);
                 chart.data.datasets[0].data.push(data1);
                 chart.data.datasets[1].data.push(data2);
+                chart.update();
+            }
+
+            function removeData(chart) {
+                chart.data.labels = [];
+                chart.data.datasets[0].data = [];
+                chart.data.datasets[1].data = [];
                 chart.update();
             }
 
@@ -117,7 +128,7 @@
                 html : true,
                 trigger : 'manual',
                 content: "<button class='close'>&times</button> " +
-                    "<p class = 'text-center'>Výška prekážka musí byť číselná ! <p>"
+                    "<p class = 'text-center'>Výška prekážky musí byť desatinné alebo celé číslo z rosahu -0.35 až 0.35! <p>"
             });
 
             $("#casDiv").popover({
@@ -130,7 +141,7 @@
                     "<p class = 'text-center'>Príkaz nie je zadaný v správnom formáte ! <p>"
             });
 
-            $('#obstacleHeight').bind('input propertychange', function() {
+            $('#obstacleHeight').bind('input propertychange focusin', function() {
                 let req = $("#obstacleHeight").val();
                 if(req === ""){
                     $('#obstacleHeight').popover('hide');
@@ -139,7 +150,7 @@
                 }
             });
 
-            $('#requirement').bind('input propertychange', function() {
+            $('#requirement').bind('input propertychange focusin', function() {
                 let req = $("#requirement").val();
                 if(req === ""){
                     $('#casDiv').popover('hide');
@@ -193,14 +204,16 @@
 
             $("#submitPlotButton").click(function(){
                 let ok = false;
+                let shift = 190;
                 let obstacleHeight = $("#obstacleHeight").val();
                 obstacleHeight = obstacleHeight.replace(",", ".");
                 console.log(obstacleHeight);
                 let float = /^\s*(\+|-)?((\d+(\.\d+)?)|(\.\d+))\s*$/;
-                if(float.test(obstacleHeight)){
+                if(float.test(obstacleHeight) && parseFloat(obstacleHeight) <= 0.35 && parseFloat(obstacleHeight) >= -0.35){
                     ok = true;
                     $('#casDiv').popover('hide');
                 } else {
+                    ok = false;
                     $("#obstacleHeight").addClass("border-danger");
                     $("#obstacleHeight").addClass("text-danger");
                     $('#obstacleHeight').popover('show');
@@ -214,29 +227,70 @@
                         url: "../api/api.php",
                         dataType: "json",
                         success: function(result) {
-                            if($('#checkBoxPlot').attr('checked')){
-                                $("#chartDiv").removeClass("d-none");
-                                let X_axis = result.dataT;
-                                let Y_axis_car = result.dataY;
-                                let Y_axis_wheel= getCarY(Y_axis_car.length, result.dataX);
+                            removeData(myChart);
+                            clearCanvas();
+                            let X_axis = result.dataT;
+                            let Y_axis_car = result.dataY;
+                            let Y_axis_wheel= getCarY(Y_axis_car.length, result.dataX);
 
+                            if($('#checkBoxPlot').is(':checked') && $('#checkBoxAnimation').is(':checked')){
+                                $("#animationDiv").removeClass("d-none");
+                                $("#chartDiv").removeClass("d-none");
+                                for(let i = 0; i < Y_axis_wheel.length ; i++){
+                                    (function(index) {
+                                        timeoutFunc = setTimeout(function() {
+                                            if(i < shift){
+                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i], 0, 0);
+                                            } else {
+                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i],
+                                                    Y_axis_wheel[i-shift], Y_axis_car[i-shift]);
+                                            }
+
+                                            addData(myChart, y_time, Y_axis_wheel[i], Y_axis_car[i]);
+                                            y_time = roundToTwo(y_time + 0.01);
+                                        }, X_axis[i]/10);
+                                        // }, X_axis[i]*10000);
+                                    })(i);
+                                }
+                            }
+                            else if($('#checkBoxPlot').is(':checked')){
+                                $("#animationDiv").addClass("d-none");
+                                $("#chartDiv").removeClass("d-none");
 
                                 for(let i = 0; i < Y_axis_wheel.length ; i++){
                                     (function(index) {
-                                        setTimeout(function() {
-                                            addData(myChart, i/100, Y_axis_wheel[i], Y_axis_car[i]);
+                                        timeoutFunc = setTimeout(function() {
+                                            addData(myChart, y_time, Y_axis_wheel[i], Y_axis_car[i]);
+                                            y_time = roundToTwo(y_time + 0.01);
                                         }, X_axis[i]/10);
+                                        // }, X_axis[i]*10000);
+                                    })(i);
+                                }
+                            }
+                            else if($('#checkBoxAnimation').is(':checked')){
+                                $("#animationDiv").removeClass("d-none");
+                                $("#chartDiv").addClass("d-none");
+
+                                for(let i = 0; i < Y_axis_wheel.length ; i++){
+                                    (function(index) {
+                                        timeoutFunc = setTimeout(function() {
+                                            if(i < shift){
+                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i], 0, 0);
+                                            } else {
+                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i],
+                                                    Y_axis_wheel[i-shift], Y_axis_car[i-shift]);
+                                            }
+                                            addData(myChart, y_time, Y_axis_wheel[i], Y_axis_car[i]);
+                                            y_time = roundToTwo(y_time + 0.01);
+                                        }, X_axis[i]/10);
+                                        // }, X_axis[i]*10000);
                                     })(i);
                                 }
                             } else {
+                                $("#animationDiv").addClass("d-none");
                                 $("#chartDiv").addClass("d-none");
                             }
-
-                            if($('#checkBoxAnimation').attr('checked')){
-                                $("#animationDiv").removeClass("d-none");
-                            } else {
-                                $("#animationDiv").addClass("d-none");
-                            }
+                            y_time = 0;
 
                         },
                         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -332,20 +386,20 @@
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="animationForm" class="text-sm">
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="obstacleHeight" type="text"
+                            <input class="form-control" id="obstacleHeight"
+                                   type="text"
                                       placeholder="Sem napíšte výšku prekážky ..."/>
                             <label for="obstacleHeight">Zadajte výšku prekážky (v m)</label>
-                            <div class="invalid-feedback" data-sb-feedback="obstacleHeight:required">Toto pole je povinné</div>
                             <div class="d-flex flex-row justify-content-start align-items-center pt-4">
                                 <div class="form-check me-5">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot" checked>
-                                    <label class="form-check-label" for="flexCheckDefault">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot">
+                                    <label class="form-check-label" for="checkBoxPlot">
                                         <small>Vykreslenie grafu</small>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="checkBoxAnimation">
-                                    <label class="form-check-label" for="flexCheckChecked">
+                                    <label class="form-check-label" for="checkBoxAnimation">
                                         <small>Vykreslenie animácie</small>
                                     </label>
                                 </div>
@@ -355,13 +409,18 @@
 
                         <button class="btn btn-primary btn-lg" id="submitPlotButton" type="button">Odoslať</button>
                     </form>
-                    <div class = "d-none" id = "chartDiv">
-                        <canvas id="myChart"></canvas>
+
+                    <div class = "mt-5 row justify-content-center">
+                        <div class = "d-none" id = "chartDiv">
+                            <canvas id="myChart"></canvas>
+                        </div>
+
+                        <div class = "d-none" id = "animationDiv">
+                        </div>
                     </div>
 
-                    <div class = "d-none" id = "animationDiv">
 
-                    </div>
+
 
                 </div>
             </div>
