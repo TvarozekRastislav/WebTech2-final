@@ -1,7 +1,8 @@
 {
   "require": {
     "symfony/yaml": "^5.1",
-    "vlucas/phpdotenv": "^5.3"
+    "vlucas/phpdotenv": "^5.3",
+    "phpmailer/phpmailer": "^6.5"
   },
   "require-dev": {
     "phpmd/phpmd": "@stable",
