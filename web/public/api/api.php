@@ -7,7 +7,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
 
     case "GET":
         if (isset($_GET['acces_token']) && !empty($_GET['r'])) {//kontrola tokenu a hodnoty r
-            if ($_GET['acces_token'] == $acces_token && is_float(floatval($_GET['r']))) {
+            if ($_GET['acces_token'] == $acces_token && is_float(floatval($_GET['r'])) ){
                 $r = $_GET['r'];
                 $script_runner = new ScriptCalculation();
                 $dataT = $script_runner->handleOutputT($r);
