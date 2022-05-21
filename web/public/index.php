@@ -1,3 +1,4 @@
+<?php include "../config.php" ?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -307,18 +308,25 @@
 <body id="page-top">
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand">Finálne zadanie</a>
+            <a class="navbar-brand"><?php echo $lang['final_ass'] ?></a>
             <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded"
                     type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                     aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fas fa-bars"></i>
             </button>
+            <form method="get">
+                <select id="lang" name="lang">
+                    <option value="sk">Slovak</option>
+                    <option value="en">English</option>
+                </select>
+                <button type="submit"></button>
+            </form>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#about">O projekte</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formCasContainer">Formulár na CAS</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#plotContainer">Animácia a graf</a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#about"><?php echo $lang['about'] ?>  </a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formCasContainer"><?php echo $lang['form'] ?></a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#plotContainer"><?php echo $lang['funkcionality'] ?></a></li>
                 </ul>
             </div>
         </div>
@@ -326,7 +334,7 @@
 
     <section class="page-section bg-primary text-white mb-0" id="about">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-white pt-5">O projekte</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-white pt-5"><?php echo $lang['about'] ?></h2>
             <div class="divider-custom divider-light">
                 <div class="divider-custom-line"></div>
                 <div class="divider-custom-icon">
@@ -336,11 +344,11 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 ms-auto">
-                    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sodales, elit at maximus
-                        ullamcorper, lacus nibh malesuada tellus, sit amet viverra est turpis suscipit tortor. Duis sit amet
-                        dolor porttitor, ornare tortor eget, venenatis ligula. Aenean erat est, aliquam egestas nibh eget,
-                        faucibus porttitor neque. Morbi in tortor nulla. Quisque volutpat felis sit amet enim bibendum,
-                        ac maximus enim fermentum.
+                    <p class="lead">?>
+                        Donec non arcu at turpis consequat fringilla. Cras vitae augue nulla.
+                        Phasellus tellus turpis, molestie eget mi sagittis, rutrum faucibus ante. Duis malesuada ipsum dolor,
+                        pharetra tristique lectus condimentum eu. Quisque rutrum ornare nibh. Curabitur iaculis cursus dui,
+                        sed aliquet odio pharetra ut. Orci varius natoque penatibus et magnis dis parturient montes, nasc
                     </p>
                 </div>
                 <div class="col-lg-4 me-auto">
@@ -356,17 +364,17 @@
 
     <section class="page-section bg-white text-white mb-0" id="formCasContainer">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary">Formulár na CAS</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['form_CAS']?></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="casForm">
                         <div class="form-floating mb-3" id = "casDiv">
                             <textarea class="form-control" id="requirement" type="text"
                                       placeholder="Sem napíšte príkaz ..." style="height: 6rem"></textarea>
-                            <label for="requirement">Zadajte príkaz</label>
+                            <label for="requirement"><?php echo $lang['first_placeholder']?></label>
                         </div>
 
-                        <button class="btn btn-primary btn-lg" id="submitCasFormButton" type="button">Vypočítať</button>
+                        <button class="btn btn-primary btn-lg" id="submitCasFormButton" type="button"><?php echo $lang['calculate']?></button>
                     </form>
                 </div>
                 <div class="col-lg-8 col-xl-7 pt-5 lead" id="outputFormContainer">
@@ -381,7 +389,7 @@
 
     <section class="page-section bg-white text-white mb-0 m-5" id="plotContainer">
         <div class = "container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary">Animácia a graf</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['anim_chart']?></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="animationForm" class="text-sm">
@@ -389,18 +397,18 @@
                             <input class="form-control" id="obstacleHeight"
                                    type="text"
                                       placeholder="Sem napíšte výšku prekážky ..."/>
-                            <label for="obstacleHeight">Zadajte výšku prekážky (v m)</label>
+                            <label for="obstacleHeight"><?php echo $lang['second_placeholder']?></label>
                             <div class="d-flex flex-row justify-content-start align-items-center pt-4">
                                 <div class="form-check me-5">
                                     <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot">
                                     <label class="form-check-label" for="checkBoxPlot">
-                                        <small>Vykreslenie grafu</small>
+                                        <small><?php echo $lang['make_chart']?></small>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="checkBoxAnimation">
                                     <label class="form-check-label" for="checkBoxAnimation">
-                                        <small>Vykreslenie animácie</small>
+                                        <small><?php echo $lang['make_animation']?></small>
                                     </label>
                                 </div>
 
@@ -418,10 +426,6 @@
                         <div class = "d-none" id = "animationDiv">
                         </div>
                     </div>
-
-
-
-
                 </div>
             </div>
         </div>
@@ -430,14 +434,12 @@
 
     <footer class="footer text-center">
         <div class="container">
-            <p>Footer</p>
-            <p class="text-white">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sodales, elit at maximus
-                ullamcorper, lacus nibh malesuada tellus, sit amet viverra est turpis suscipit tortor.</p>
+            <p class="text-white"><?php echo $lang['footer_desc']?></p>
         </div>
     </footer>
 
     <div class="copyright py-4 text-center text-white">
-        <div class="container"><small>Copyright &copy; Finálne zadanie Webte2 2022</small></div>
+        <div class="container"><small><?php echo $lang['cp']?></small></div>
     </div>
 </body>
 </html>
