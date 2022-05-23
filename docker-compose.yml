@@ -22,6 +22,8 @@ services:
             dockerfile: Dockerfile
             context: .
         restart: always
+        ports:
+            - "9090:9090"
         volumes:
             - "./etc/php/php.ini:/usr/local/etc/php/conf.d/php.ini"
             - "./web:/var/www/html"
