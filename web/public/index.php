@@ -565,7 +565,7 @@
                             <div class="d-flex flex-row justify-content-start align-items-center pt-4">
                                 <div class="form-check me-5 ">
                                     <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot">
-                                    <label class="form-check-label" for="checkBoxPlot" id="checkBoxLabel>
+                                    <label class="form-check-label" for="checkBoxPlot" id="checkBoxLabel1">
                                         <small><?php echo $lang['make_chart']?></small>
                                     </label>
                                 </div>
