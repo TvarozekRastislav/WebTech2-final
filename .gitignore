@@ -29,3 +29,4 @@ nbproject/
 etc/ssl/
 
 web/.env
+web/app/Octave
