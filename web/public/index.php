@@ -490,6 +490,7 @@
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#about"><?php echo $lang['about'] ?>  </a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formCasContainer"><?php echo $lang['form'] ?></a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#plotContainer"><?php echo $lang['funkcionality'] ?></a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formName"><?php echo $lang['track_experiments'] ?></a></li>
                 </ul>
             </div>
         </div>
@@ -579,7 +580,7 @@
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-lg" id="submitPlotButton" type="button">Odoslať</button>
+                        <button class="btn btn-primary btn-lg" id="submitPlotButton" type="button"><?php echo $lang['send'] ?></button>
                     </form>
 
                     <div class="mt-5 row justify-content-center">
@@ -597,16 +598,16 @@
 
     <section class="page-section bg-white text-white mb-0" id="formCasContainer">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary">Sledovanie Experimentov</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['track_experiments'] ?></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="nicknameForm">
                         <div class="form-floating mb-3" id="nicknameDiv">
                             <textarea class="form-control" id="nickname" type="text" placeholder="Sem napíšte nickname ..." style="height: 6rem"></textarea>
-                            <label for="requirement">Zadajte svoj nickname</label>
+                            <label for="requirement"><?php echo $lang['nick'] ?></label>
                         </div>
 
-                        <button class="btn btn-primary btn-lg" id="submitNickameButton" type="button">Pridať</button>
+                        <button class="btn btn-primary btn-lg" id="submitNickameButton" type="button"><?php echo $lang['add'] ?></button>
                     </form>
                 </div>
                 <div class="col-lg-8 col-xl-7 pt-5 lead" id="outputFormContainerNickname">

@@ -2,6 +2,8 @@
 $lang=array(
     "about"=>"About project",
     "final_ass"=>"FINAL ASSIGNMENT",
+    "track_experiments"=>"WATCH EXPERIMENTS",
+    "nick"=>"Enter your nickname",
     "form"=>"Form for CAS",
     "funkcionality"=>"Animation and chart",
     "form_CAS"=>"FORM FOR CAS",
@@ -13,5 +15,6 @@ $lang=array(
     "make_chart"=>"Render chart",
     "make_animation"=>"Render animation",
     "footer_desc"=>"This project was created as a result of the final assignment of the subject of web technology.",
-    "cp"=>"Copyright © Final exam Webte2 2022"
+    "cp"=>"Copyright © Final exam Webte2 2022",
+    "add"=>"Add"
 );
