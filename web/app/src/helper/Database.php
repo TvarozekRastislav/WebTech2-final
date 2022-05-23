@@ -1,12 +1,10 @@
 <?php
+
 namespace App\Helper;
-
 use Dotenv;
-
-//neviem ako si naloadujem dotenv conf,toto este upravim
-//$dotenv->load();
 use PDO;
 use PDOException;
+require_once "../../../config.php";
 class Database {
 
     private $conn;
@@ -14,7 +12,6 @@ class Database {
 
     public function getConnection(){
         $this->conn = null;
-        //premenne pojdu z env, upravim
         $host="mysql";
         $db="final";
         $user="user";
