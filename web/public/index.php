@@ -157,8 +157,6 @@
 
             function watchExp(name) {
                 let r;
-                console.log("watchExp");
-                console.log(name);
 
                 $.ajax({
                     url: 'php/synchornious/getR.php?name=' + name,
@@ -168,17 +166,23 @@
                     },
                     dataType: 'text',
                     success: function(result) {
-                        console.log(result);
+                        //MATKA SEM TREBA UPRAVIT TO ODSTANOVANIE
+                        $("#submitPlotButton").remove();
+                        $("#removeForSync").addClass("d-none");
+
+                        $("#checkBoxAnimation").addClass("d-none");
+                        $("#checkBoxPlot").addClass("d-none");
+                        $("#checkBoxLabel").addClass("d-none");
+                        $("#checkBoxLabel1").addClass("d-none");
                         $("#animationDiv").removeClass("d-none");
                         $("#chartDiv").removeClass("d-none");
                         $('#checkBoxPlot').prop('checked', true);
                         $('#checkBoxAnimation').prop('checked', true);
 
                         output = JSON.parse(result);
-                        if (lastCommandExec == output[2]) {
+                        if (lastCommandExec == output[2]|| output[1] == null) {
                             return;
                         }
-                        console.log(output[1]);
                         lastCommandExec = output[2];
                         callGraph(null, output[1]);
                     },
@@ -237,7 +241,6 @@
 
             $("#submitCasFormButton").click(function() {
                 let req = $("#requirement").val();
-                console.log(req);
                 $.ajax({
                     type: 'GET',
                     data: {
@@ -256,7 +259,6 @@
                             output = (result.ans).replace("ans = ", "").replaceAll("\"", "");
                             ok = true;
                         }
-                        console.log(output);
                         if ((ok && output === "") || !ok) {
                             $("#outputForm").hide();
                             $("#requirement").addClass("border-danger");
@@ -296,7 +298,6 @@
                     },
                     dataType: 'text',
                     success: function(result) {
-                        console.log(result);
                         submited = 1;
                         if (result == "alredyExists") {
 
@@ -317,7 +318,8 @@
                             setInterval(() => {
                                 refreshNames();
                             }, 5000);
-
+                            $("#submitNickameButton").addClass("d-none");
+                            $("#nicknameDiv").addClass("d-none");
 
                         }
                     },
@@ -337,10 +339,8 @@
                 let obstacleHeight = $("#obstacleHeight").val();
                 if (r != null) {
                     obstacleHeight = r;
-                    console.log(obstacleHeight);
                 }
                 obstacleHeight = obstacleHeight.replace(",", ".");
-                console.log(obstacleHeight);
                 let float = /^\s*(\+|-)?((\d+(\.\d+)?)|(\.\d+))\s*$/;
                 if (float.test(obstacleHeight) && parseFloat(obstacleHeight) <= 0.35 && parseFloat(obstacleHeight) >= -0.35) {
                     ok = true;
@@ -548,18 +548,18 @@
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="animationForm" class="text-sm">
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="obstacleHeight" type="text" placeholder="Sem napíšte výšku prekážky ..." />
-                            <label for="obstacleHeight">Zadajte výšku prekážky (v m)</label>
+                            <input class="form-control" id="obstacleHeight" type="text" id="removeForSync" placeholder="Sem napíšte výšku prekážky ... " />
+                            <label for="obstacleHeight" id="removeForSync">Zadajte výšku prekážky (v m)</label>
                             <div class="d-flex flex-row justify-content-start align-items-center pt-4">
-                                <div class="form-check me-5">
+                                <div class="form-check me-5 ">
                                     <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot">
-                                    <label class="form-check-label" for="checkBoxPlot">
+                                    <label class="form-check-label" for="checkBoxPlot" id="checkBoxLabel">
                                         <small>Vykreslenie grafu</small>
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="" id="checkBoxAnimation">
-                                    <label class="form-check-label" for="checkBoxAnimation">
+                                    <label class="form-check-label" for="checkBoxAnimation" id="checkBoxLabel1">
                                         <small>Vykreslenie animácie</small>
                                     </label>
                                 </div>
