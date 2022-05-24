@@ -739,7 +739,7 @@
 
                     </div>
 
-                   <div class="p-2">
+                   <div class="p-2"  id="zalom">
                        <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse2">
                            <span class="getdata"></span>
                        </button>
