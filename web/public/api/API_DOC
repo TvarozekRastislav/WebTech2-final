@@ -1,0 +1,16 @@
+endpoint: /api/?prikaz={"command"}&acces_token={token}
+/api/?prikaz=1+1&acces_token=kiRkR15MBEypq7Che
+
+method: GET
+description: Run octave command
+returns: JSON
+return body: " "
+
+endpoint:  /api/?r={height}&acces_token={token}
+/api/?r=5.0&acces_token=kiRkR15MBEypq7Che
+
+//height must be float!!
+method: GET
+description: Get data T,X,Y for animation.
+returns: JSON
+return body{"dataT":[],"dataX":[],"dataY":[]}

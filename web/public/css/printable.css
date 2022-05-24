@@ -1,0 +1,17 @@
+
+@media print {
+    #formCasContainer,#plotContainer,#logContainer,footer,head,#print,button,h2,nadpis,#formName { display: none !important; }
+    #mainNav,nav{display: none ;}
+    section { height: 100%; }
+    #about{color: black !important}
+
+    section {page-break-inside: avoid;}
+    #myCollapse,#myCollapse2 {display: block;
+    }
+    #hide {
+        display: block;
+    }
+
+    #zalom { margin-top: 500px }
+
+}
