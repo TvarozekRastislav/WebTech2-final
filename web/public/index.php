@@ -493,10 +493,8 @@
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formCasContainer"><?php echo $lang['form'] ?></a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#plotContainer"><?php echo $lang['funkcionality'] ?></a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formName"><?php echo $lang['track_experiments'] ?></a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#logContainer">Informácie
-                            o logoch</a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#apiDocContainer">Informácie
-                            o API</a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#logContainer"><?php echo $lang['loginfo']?></a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#apiDocContainer"><?php echo $lang['APIinfo']?></a></li>
                 </ul>
             </div>
         </div>
@@ -523,9 +521,7 @@
                     </p>
                 </div>
                 <div class="col-lg-4 me-auto">
-                    <p class="lead">Pre zobrazenie ostaných používateľov ktorý práve vykonávajú experminety je potrebné zadať svoje meno.
-                        Taktiež pokiaľ si želáš aby ostaný používatelia mohli sledovať tvoje experimenty je potrebné zadať meno.
-                        Pre ukončenie sledovania experminetu druhej osoby je potrebné refreshnúť stránku.
+                    <p class="lead"><?php echo $lang['popis2']?>
                     </p>
                 </div>
             </div>
@@ -627,16 +623,16 @@
 
     <section class="page-section bg-white text-white mb-0 m-5" id="logContainer">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary">Informácie o logoch</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['loginfo']?></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
 
                     <button class="btn btn-primary btn-lg" id="downloadCsv" type="button"
-                            onclick="location.href='api/export.php';">Stiahni CSV súbor
+                            onclick="location.href='api/export.php';"><?php echo $lang['csvdown']?>
                     </button>
                     <br><br>
                     <button class="btn btn-primary btn-lg" id="sendToMail" type="button"
-                            onclick="location.href='api/email.php';">Odošli na mail
+                            onclick="location.href='api/email.php';"><?php echo $lang['mailSend']?>
                     </button>
 
                 </div>
@@ -646,48 +642,48 @@
 
     <section class="page-section bg-white  mb-0 m-5" id="apiDocContainer">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary">Informácie o API</h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary"> <?php echo $lang['APIinfo']?></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
 
                     <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse">
-                        GET /final/api spustí príkaz octave
+                        <?php echo $lang['runoctave']?>
                     </button>
 
                     <br><br>
 
                     <div class="collapse hide" id="myCollapse">
-                        <h3 id="hide">GET /final/api spustí príkaz octave</h3>
-                        <div class="card card-body"><h4>Parametre</h4>prikaz={command}<br>acces_token={token}<br>
-                            <h4>Popis</h4>Spustí príkaz octave<br>vracia : JSON<br>
-                            štruktúra, ktorú vracia : {"ans":"string"}
-                            <h4>Príklad použitia</h4>/api/?prikaz=1+1&acces_token=kiRkR15MBEypq7Che
-                            <h4>Odpoveď</h4><h6>Úspešná odpoveď</h6>Kód : 200<br> Príklad odpovede : {"ans":"\"ans = 2\""}
-                            <h6>Neúspešná odpoveď</h6>Kód : 404<br> Príklad odpovede : "err": {"\"Wrong access token!\""}
+                        <h3 id="hide"><?php echo $lang['runoctave']?></h3>
+                        <div class="card card-body"><h4><?php echo $lang['parameters']?></h4>príkaz={<?php echo $lang['command']?>}<br>acces_token={token}<br>
+                            <h4><?php echo $lang['description']?></h4><?php echo $lang['runoctave']?><br><?php echo $lang['return']?> : JSON<br>
+                            <?php echo $lang['returnbody']?> : {"ans":"string"}
+                            <h4><?php echo $lang['example']?> </h4>/api/?prikaz=1+1&acces_token=kiRkR15MBEypq7Che
+                            <h4><?php echo $lang['response']?> </h4><h6> <?php echo $lang['succes']?></h6><?php echo $lang['code']?> : 200<br> <?php echo $lang['exampleA']?> : {"ans":"\"ans = 2\""}
+                            <h6><?php echo $lang['fail']?></h6><?php echo $lang['code']?> : 404<br> <?php echo $lang['exampleA']?> : "err": {"\"Wrong access token!\""}
                         </div>
                     </div>
 
                     <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse2">
-                        GET /final/api dostane dáta pre animáciu
+                        <?php echo $lang['getdata']?>
                     </button>
                     <br> <br>
 
 
 
                     <div class="collapse hide" id="myCollapse2">
-                        <h3 id="hide">GET /final/api dostane dáta pre animáciu</h3>
-                        <div class="card card-body"><h4>Parametre</h4>r={height}<br>acces_token={token}<br>
-                            <h4>Popis</h4>Dostane dáta T,X,Y pre animáciu<br>vracia : JSON<br>
-                            štruktúra, ktorú vracia : {"dataT":[],"dataX":[],"dataY":[]}
-                            <h4>Príklad použitia</h4>/api/?r=5.0&acces_token=kiRkR15MBEypq7Che
-                            <h4>Odpoveď</h4><h6>Úspešná odpoveď</h6>Kód : 200<br> Príklad odpovede :
+                        <h3 id="hide"><?php echo $lang['getdata']?></h3>
+                        <div class="card card-body"><h4><?php echo $lang['parameters']?></h4>r={<?php echo $lang['height']?>}<br>acces_token={token}<br>
+                            <h4><?php echo $lang['description']?></h4><?php echo $lang['getdata']?>.<br><?php echo $lang['return']?> : JSON<br>
+                            <?php echo $lang['returnbody']?> : {"dataT":[],"dataX":[],"dataY":[]}
+                            <h4><?php echo $lang['example']?> </h4>/api/?r=5.0&acces_token=kiRkR15MBEypq7Che
+                            <h4><?php echo $lang['response']?></h4><h6><?php echo $lang['succes']?></h6><?php echo $lang['code']?>: 200<br> <?php echo $lang['exampleA']?> :
                             {"dataT":[],"dataX":[],"dataY":[]}
-                            <h6>Neúspešná odpoveď</h6>Kód : 404<br> Príklad odpovede : "err": {"\"Wrong access token!\""}
+                            <h6><?php echo $lang['fail']?></h6><?php echo $lang['code']?> : 404<br> <?php echo $lang['exampleA']?> : "err": {"\"Wrong access token!\""}
                         </div>
                     </div>
 
                     <button class="btn btn-primary btn-lg" id="print" type="button"
-                            onclick="window.print()">Stiahni API dokumentáciu
+                            onclick="window.print()"><?php echo $lang['doc']?>
                     </button>
 
 

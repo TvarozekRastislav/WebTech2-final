@@ -16,5 +16,27 @@ $lang=array(
     "make_animation"=>"Vykreslenie animácie",
     "footer_desc"=>"Tento projekt vznikol ako výsledny produkt finálneho zadania z predmetu webové technológie.",
     "cp"=>"Copyright © Finálne zadanie Webte2 2022",
-    "add"=>"Pridaj"
+    "add"=>"Pridaj",
+    "description"=>"Popis",
+    "parameters"=>"Parametre",
+    "getdata"=>"GET /final/api Dostane dáta T,X,Y pre animáciu",
+    "runoctave"=>"GET /final/api Spustí príkaz octave",
+    "command"=>"príkaz",
+    "returnbody"=>"Štruktúra, ktorú vracia",
+    "return"=>"Vracia",
+    "example"=>"Príklad použitia",
+    "response"=>"Odpoveď",
+    "succes"=>"Úspešná odpoveď",
+    "fail"=>"Neúspešná odpoveď",
+    "code"=>"Kód",
+    "exampleA"=>"Príklad odpovede",
+    "doc"=>"Stiahni API dokumentáciu",
+    "height"=>"výška",
+    "APIinfo"=>"Informácie o API",
+    "loginfo"=>"Informácie o logoch",
+    "csvdown"=>"stiahnu csv súbor",
+    "mailSend"=>"Odošli informácie na mail",
+    "popis2"=>"Pre zobrazenie ostaných používateľov ktorý práve vykonávajú experminety je potrebné zadať svoje meno.
+Taktiež pokiaľ si želáš aby ostaný používatelia mohli sledovať tvoje experimenty je potrebné zadať meno.
+Pre ukončenie sledovania experminetu druhej osoby je potrebné refreshnúť stránku.",
 );
