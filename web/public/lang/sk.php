@@ -38,8 +38,24 @@ $lang=array(
     "loginfo"=>"Informácie o logoch",
     "csvdown"=>"Stiahni csv súbor",
     "mailSend"=>"Odošli informácie na mail",
+    "h_popis2"=>"Sledovanie experimentov",
     "popis2"=>"Pre zobrazenie ostaných používateľov ktorý práve vykonávajú experminety je potrebné zadať svoje meno.
-    Taktiež pokiaľ si želáš aby ostaný používatelia mohli sledovať tvoje experimenty je potrebné zadať meno.
+    Taktiež pokiaľ si želáš, aby ostantní používatelia mohli sledovať tvoje experimenty je potrebné zadať meno.
     Pre ukončenie sledovania experminetu druhej osoby je potrebné refreshnúť stránku.",
+    "h_documentation"=>"Technická dokumentácia",
+    "documentation"=>"Docker-image base: https://github.com/nanoninja/php-fpm \\n
+        Docker-containers:\\n
+        - php 8.1 s octave gnu\\n
+        - nginx alpine\\n
+        - mysql 8.0.21\\n
+        - phpmyadmin\\n
+        - composer: phpmailer\\n
+        Vykreslenie animácie: p5.js\\n
+        Vizualizácia grafu: chart.js\\n
+        Dizajn: Bootstrap v5 \\n",
+    "mhajek"=>"- API ku CAS zabezpečené API  tokenom \\n - dvojjazyčnosť \\n - finalizácia aplikácie \\n - používanie githubu",
+    "rtvarozek"=>"- docker balíček \\n - synchrónne sledovanie experimentovania \\n - finalizácia aplikácie \\n - používanie githubu",
+    "mmahelyova"=>"- animácia a graf \\n - overenie cez API formulár \\n - dizajn \\n - finalizácia aplikácie \\n - používanie githubu",
+    "lhrnciarikova"=>"- logovanie a export do csv \\n - odoslanie mailu \\n - export popisu API do pdf \\n - finalizácia aplikácie \\n - používanie githubu",
 );
 echo json_encode($lang);

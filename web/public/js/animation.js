@@ -47,10 +47,10 @@ window.addEventListener('resize', resizeAll, false);
 
 function initt(){
     width = $("#casForm").width();
-    height = $("#casForm").height()*4;
+    height = $("#casForm").height()*2;
 
     car_width = width/2;
-    car_height = height/5;
+    car_height = height/2.5;
 
     car_position = $("#casForm").height();
     car_position_y = car_position + car_jump;
@@ -72,7 +72,7 @@ function initt(){
 }
 
 function preload() {
-    car = loadImage('../img/car.png');
+    car = loadImage('/img/car.png');
 }
 
 function resizeAll(){

@@ -132,7 +132,7 @@
 
             function refreshNames() {
                 $.ajax({
-                    url: 'php/synchornious/refreshNames.php?name=' + nickaname,
+                    url: '/php/synchornious/refreshNames.php?name=' + nickaname,
                     type: 'GET',
                     data: {
                         name: nickaname
@@ -142,7 +142,7 @@
                         $("#outputFormNickname").empty();
                         output = JSON.parse(result);
                         output.forEach(element => {
-                            $("#outputFormNickname").append("<button class='box1'>" + element['name'] + "</button>");
+                            $("#outputFormNickname").append("<button class='box1 btn btn-secondary p-1'>" + element['name'] + "</button>");
                         });
                         const boxes = document.querySelectorAll('.box1');
                         boxes.forEach(box => {
@@ -164,7 +164,7 @@
                 let r;
 
                 $.ajax({
-                    url: 'php/synchornious/getR.php?name=' + name,
+                    url: '/php/synchornious/getR.php?name=' + name,
                     type: 'GET',
                     data: {
                         name: name
@@ -209,7 +209,7 @@
 
             function changeLanguage(){
                 $.ajax({
-                    url: 'lang/'+lang+'.php',
+                    url: '/lang/'+lang+'.php',
                     type: 'GET',
                     dataType: 'json',
                     success: function(result) {
@@ -251,8 +251,13 @@
                         $(".exampleA").text(result.exampleA);
                         $(".getdata").text(result.getdata);
                         $("#doc").text(result.doc);
-                        $(".height").text(result.height);
-
+                        $("#h_popis2").text(result.h_popis2);
+                        $("#h_documentation").text(result.h_documentation);
+                        getTextWithBR(result.documentation, "#documentation");
+                        getTextWithBR(result.mhajek, "#mhajek");
+                        getTextWithBR(result.rtvarozek, "#rtvarozek");
+                        getTextWithBR(result.mmahelyova, "#mmahelyova");
+                        getTextWithBR(result.lhrnciarikova, "#lhrnciarikova");
                     },
                     error: function() {
                         console.log('error');
@@ -260,6 +265,15 @@
 
                 });
             };
+
+            function getTextWithBR(doc, id){
+                $(id).text("");
+                let tmp = doc.split("\\n");
+                for(let i = 0; i <tmp.length; i++){
+                    $(id).append(tmp[i]);
+                    $(id).append('<br />')
+                }
+            }
 
             $("#outputForm").hide();
 
@@ -308,7 +322,6 @@
             });
 
             $("#submitCasFormButton").click(function() {
-                console.log("som tu");
                 let req = $("#requirement").val();
                 $.ajax({
                     type: 'GET',
@@ -316,7 +329,7 @@
                         acces_token: "kiRkR15MBEypq7Che",
                         prikaz: req
                     },
-                    url: "../api/api.php",
+                    url: "/api/api.php",
                     dataType: "json",
                     success: function(result) {
                         let output = null;
@@ -362,7 +375,7 @@
 
                 nickaname = $("#nickname").val();
                 $.ajax({
-                    url: 'php/synchornious/NickNameLoad.php?name=' + nickaname,
+                    url: '/php/synchornious/NickNameLoad.php?name=' + nickaname,
                     type: 'GET',
                     data: {
                         name: nickaname
@@ -421,6 +434,7 @@
                     y_time = roundToTwo(y_time + 0.01);
                     await delay(speed);
                 }
+                $('#submitPlotButton').prop('disabled', false);
             }
 
             function callGraph(name, r) {
@@ -429,6 +443,7 @@
                 }
                 let ok = false;
                 let obstacleHeight = $("#obstacleHeight").val();
+                console.log(obstacleHeight);
                 if (r != null) {
                     obstacleHeight = r;
                 }
@@ -446,6 +461,9 @@
                 }
 
                 if (ok) {
+                    $('#obstacleHeight').popover('hide');
+                    $("#obstacleHeight").removeClass("border-danger");
+                    $("#obstacleHeight").removeClass("text-danger");
                     $([document.documentElement, document.body]).animate({
                         scrollTop: $("#animationForm").offset().top
                     }, 100);
@@ -455,9 +473,10 @@
                             acces_token: "kiRkR15MBEypq7Che",
                             r: obstacleHeight
                         },
-                        url: "../api/api.php",
+                        url: "/api/api.php",
                         dataType: "json",
                         success: function(result) {
+                            $('#submitPlotButton').prop('disabled', true);
                             removeData(myChart);
                             clearCanvas();
                             let shift = 190;
@@ -491,7 +510,7 @@
 
             function saveCommand() {
                 $.ajax({
-                    url: 'php/synchornious/commandSave.php?name=' + nickname + "&obstacleHeight=" + $("#obstacleHeight").val(),
+                    url: '/php/synchornious/commandSave.php?name=' + nickname + "&obstacleHeight=" + $("#obstacleHeight").val(),
                     type: 'GET',
                     data: {
                         name: nickaname,
@@ -517,7 +536,7 @@
                 nickname: nickaname
             }
             console.log(data);
-            navigator.sendBeacon('php/synchornious/NickNameUnload.php', fd);
+            navigator.sendBeacon('/php/synchornious/NickNameUnload.php', fd);
         });
     </script>
 </head>
@@ -567,15 +586,37 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 ms-auto">
-                    <p class="lead">
-                        Donec non arcu at turpis consequat fringilla. Cras vitae augue nulla.
-                        Phasellus tellus turpis, molestie eget mi sagittis, rutrum faucibus ante. Duis malesuada ipsum dolor,
-                        pharetra tristique lectus condimentum eu. Quisque rutrum ornare nibh. Curabitur iaculis cursus dui,
-                        sed aliquet odio pharetra ut. Orci varius natoque penatibus et magnis dis parturient montes, nasc
+                        <h5 id="h_documentation"></h5>
+                        <p class="lead" id="documentation">
+                        </p>
+                </div>
+                <div class="col-lg-4 me-auto">
+                    <h5 id="h_popis2"></h5>
+                    <p class="lead" id="popis2">
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 ms-auto">
+                    <h5>Michal Hájek</h5>
+                    <p class="lead" id="mhajek">
                     </p>
                 </div>
                 <div class="col-lg-4 me-auto">
-                    <p class="lead" id="popis2">
+                    <h5>Rastislav Tvarožek</h5>
+                    <p class="lead" id="rtvarozek">
+                    </p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-4 ms-auto">
+                    <h5>Martina Mahelyová</h5>
+                    <p class="lead" id="mmahelyova">
+                    </p>
+                </div>
+                <div class="col-lg-4 me-auto">
+                    <h5>Lucia Hrnčiariková</h5>
+                    <p class="lead" id="lhrnciarikova">
                     </p>
                 </div>
             </div>
@@ -680,12 +721,12 @@
                 <div class="flex-column justify-content-between">
 
                     <button class="btn btn-primary btn-lg" id="downloadCsv" type="button"
-                            onclick="location.href='api/export.php';"><span id="csvdown"></span>
+                            onclick="location.href='/api/export.php';"><span id="csvdown"></span>
                     </button>
 
 
                     <button class="btn btn-primary btn-lg" id="sendToMail" type="button"
-                            onclick="location.href='api/email.php';"><span id="mailSend"></span>
+                            onclick="location.href='/api/email.php';"><span id="mailSend"></span>
                     </button>
 
                 </div>
