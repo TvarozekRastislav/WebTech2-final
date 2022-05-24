@@ -9,7 +9,9 @@
     <meta name="description" content="Final">
     <meta name="author" content="">
 
-    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" media="all"/>
+    <link href="css/apiDoc.css" rel="stylesheet" media="screen"/>
+    <link href="css/printable.css" rel="stylesheet" media="print"/>
     <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
     <script src="js/script.js"></script>
     <script src="js/bootstrap.bundle.js"></script>
@@ -491,6 +493,10 @@
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formCasContainer"><?php echo $lang['form'] ?></a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#plotContainer"><?php echo $lang['funkcionality'] ?></a></li>
                     <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formName"><?php echo $lang['track_experiments'] ?></a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#logContainer">Informácie
+                            o logoch</a></li>
+                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#apiDocContainer">Informácie
+                            o API</a></li>
                 </ul>
             </div>
         </div>
@@ -498,7 +504,8 @@
 
     <section class="page-section bg-primary text-white mb-0" id="about">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-white pt-5"><?php echo $lang['about'] ?></h2>
+            <h2 class="page-section-heading text-center text-uppercase text-white pt-5" id="nadpis"><?php echo $lang['about'] ?></h2>
+            <h3 class="page-section-heading text-center text-uppercase  pt-5"id="hide"><?php echo $lang['about'] ?></h3>
             <div class="divider-custom divider-light">
                 <div class="divider-custom-line"></div>
                 <div class="divider-custom-icon">
@@ -613,6 +620,77 @@
                 <div class="col-lg-8 col-xl-7 pt-5 lead" id="outputFormContainerNickname">
                     <div class="border-bottom border-grey border-1 rounded-1 text-black p-3" id="outputFormNickname">
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section bg-white text-white mb-0 m-5" id="logContainer">
+        <div class="container">
+            <h2 class="page-section-heading text-center text-uppercase text-secondary">Informácie o logoch</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7 pt-5">
+
+                    <button class="btn btn-primary btn-lg" id="downloadCsv" type="button"
+                            onclick="location.href='api/export.php';">Stiahni CSV súbor
+                    </button>
+                    <br><br>
+                    <button class="btn btn-primary btn-lg" id="sendToMail" type="button"
+                            onclick="location.href='api/email.php';">Odošli na mail
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page-section bg-white  mb-0 m-5" id="apiDocContainer">
+        <div class="container">
+            <h2 class="page-section-heading text-center text-uppercase text-secondary">Informácie o API</h2>
+            <div class="row justify-content-center">
+                <div class="col-lg-8 col-xl-7 pt-5">
+
+                    <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse">
+                        GET /final/api spustí príkaz octave
+                    </button>
+
+                    <br><br>
+
+                    <div class="collapse hide" id="myCollapse">
+                        <h3 id="hide">GET /final/api spustí príkaz octave</h3>
+                        <div class="card card-body"><h4>Parametre</h4>prikaz={command}<br>acces_token={token}<br>
+                            <h4>Popis</h4>Spustí príkaz octave<br>vracia : JSON<br>
+                            štruktúra, ktorú vracia : {"ans":"string"}
+                            <h4>Príklad použitia</h4>/api/?prikaz=1+1&acces_token=kiRkR15MBEypq7Che
+                            <h4>Odpoveď</h4><h6>Úspešná odpoveď</h6>Kód : 200<br> Príklad odpovede : {"ans":"\"ans = 2\""}
+                            <h6>Neúspešná odpoveď</h6>Kód : 404<br> Príklad odpovede : "err": {"\"Wrong access token!\""}
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse2">
+                        GET /final/api dostane dáta pre animáciu
+                    </button>
+                    <br> <br>
+
+
+
+                    <div class="collapse hide" id="myCollapse2">
+                        <h3 id="hide">GET /final/api dostane dáta pre animáciu</h3>
+                        <div class="card card-body"><h4>Parametre</h4>r={height}<br>acces_token={token}<br>
+                            <h4>Popis</h4>Dostane dáta T,X,Y pre animáciu<br>vracia : JSON<br>
+                            štruktúra, ktorú vracia : {"dataT":[],"dataX":[],"dataY":[]}
+                            <h4>Príklad použitia</h4>/api/?r=5.0&acces_token=kiRkR15MBEypq7Che
+                            <h4>Odpoveď</h4><h6>Úspešná odpoveď</h6>Kód : 200<br> Príklad odpovede :
+                            {"dataT":[],"dataX":[],"dataY":[]}
+                            <h6>Neúspešná odpoveď</h6>Kód : 404<br> Príklad odpovede : "err": {"\"Wrong access token!\""}
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg" id="print" type="button"
+                            onclick="window.print()">Stiahni API dokumentáciu
+                    </button>
+
+
                 </div>
             </div>
         </div>
