@@ -41,15 +41,18 @@ let y2_line;
 let ok = false;
 let tmp = 0;
 
+let y_const = 0;
+
 window.addEventListener('resize', resizeAll, false);
 
 function initt(){
-    width = $("#animationForm").width();
-    height = $("#animationForm").height()*2;
+    width = $("#casForm").width();
+    height = $("#casForm").height()*4;
 
-    car_position = height/2;
     car_width = width/2;
-    car_height = height/3.5;
+    car_height = height/5;
+
+    car_position = $("#casForm").height();
     car_position_y = car_position + car_jump;
     car_position_x = 100;
 
@@ -64,6 +67,8 @@ function initt(){
 
     y1_line = car_position_y + car_height - (radius/3);
     y2_line = car_position_y + car_height - (radius/3) + jump;
+
+    // y_const =
 }
 
 function preload() {
@@ -80,7 +85,6 @@ function windowResized() {
 }
 
 function setup() {
-    console.log("setup");
     initt();
     x1_stop = wheel_1_center_x+(radius/2);
     x2_stop = width;
@@ -164,7 +168,11 @@ function test (obstacleHeight, time, y_wheel, y_car, y_wheel_prev, y_car_prev){
         wheel_jump = parseFloat(y_wheel)*(radius_tires);
         wheel_jump_2 = parseFloat(y_wheel_prev)*(radius_tires);
 
-        car_jump = (parseFloat(y_car) + parseFloat(y_wheel)) * (radius_tires);
+        car_jump = parseFloat(y_car)*(radius_tires);
+
+        // shift_y =  - Math.abs(car_jump -wheel_jump);
+
+        //car_jump = (parseFloat(y_car) + parseFloat(y_wheel)) * (radius_tires);
 
         rotationDegrees = Math.atan2(Math.abs(wheel_2_center_y-wheel_1_center_y),
             Math.abs(wheel_2_center_x-wheel_1_center_x)) * ( 180 / Math.PI );
@@ -175,14 +183,19 @@ function test (obstacleHeight, time, y_wheel, y_car, y_wheel_prev, y_car_prev){
         if(roundToOne(Math.abs(Math.abs(x1_stop-wheel_2_center_x)-(radius_tires/2))) < 1){
             ok = true;
         }
-
+        // if(Math.abs(roundToOne(rotationDegrees)) === 0){
+        //     shift_x = 0;
+        // } else {
+        //     shift_x = -car_jump -wheel_jump;
+        // }
         if(Math.abs(roundToOne(rotationDegrees)) === 0 || ok === true){
             shift_x = 0;
-            shift_y = -car_jump;
+            shift_y = -car_jump -wheel_jump;
         }
         else {
-            shift_x = - wheel_jump - wheel_jump_2;
-            shift_y = -car_jump + wheel_jump_2;
+            // shift_x = - wheel_jump - wheel_jump_2;
+            shift_x = -car_jump -wheel_jump;
+            shift_y =  -car_jump +wheel_jump;
         }
 
         //clear();
@@ -192,7 +205,7 @@ function test (obstacleHeight, time, y_wheel, y_car, y_wheel_prev, y_car_prev){
         degrees = 0;
         rotationDegrees = 0;
         shift_x = shift_x/100;
-        shift_y = -car_jump;
+        shift_y = -car_jump -wheel_jump;
         redraw();
     }
 }

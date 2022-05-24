@@ -1,4 +1,3 @@
-<?php include "../config.php" ?>
 <!doctype html>
 <html lang="en">
 
@@ -33,23 +32,26 @@
         .popover-danger .popover-arrow:after {
             border-bottom-color: #d9534f;
         }
+
     </style>
 
 
     <script>
-        let timeoutFunc;
-        let y_time = 0;
+        let speed = 0.01 // cyklus sa vykonáva každú stotinu
         let submited = 0;
         let nickname;
         let watch;
         let lastCommandExec;
 
         $(document).ready(function() {
+            let lang = "sk";
+            changeLanguage();
+
             const data = {
                 datasets: [{
                         borderColor: '#FF8C00',
                         data: [],
-                        label: 'Wheel',
+                        label: 'Koleso',
                         pointRadius: 0,
                         backgroundColor: '#FF8C00',
                         tension: 0.4,
@@ -57,7 +59,7 @@
                     {
                         borderColor: '#1C90EA',
                         data: [],
-                        label: 'Car',
+                        label: 'Karoséria',
                         pointRadius: 0,
                         backgroundColor: '#1C90EA',
                         tension: 0.4,
@@ -196,6 +198,69 @@
 
             }
 
+            $('.radiobtngroup').change(function (e){
+                if(this.id === 'sk_lang'){
+                    lang = "sk";
+                } else if (this.id === "en_lang"){
+                    lang = "en";
+                }
+                changeLanguage();
+            });
+
+            function changeLanguage(){
+                $.ajax({
+                    url: 'lang/'+lang+'.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(result) {
+                        $(".aboutHeader").text(result.about);
+                        $(".final_ass").text(result.final_ass);
+                        $("#form").text(result['form']);
+                        $(".track_experiments").text(result.track_experiments);
+                        $("#nick").text(result.nick);
+                        $("#funkcionality").text(result.funkcionality);
+                        $("#form_CAS").text(result.form_CAS);
+                        $("#first_placeholder").text(result.first_placeholder);
+                        $("#anim_chart").text(result.anim_chart);
+                        $("#second_placeholder").text(result.second_placeholder);
+                        $("#send").text(result.send);
+                        $("#make_chart").text(result.make_chart);
+                        $("#make_animation").text(result.make_animation);
+                        $("#footer_desc").text(result.footer_desc);
+                        $("#cp").text(result.cp);
+                        $("#addButton").text(result['add']);
+                        $("#calculate").text(result.calculate);
+                        $("#popover_1").text(result.popover_1);
+                        $("#popover_2").text(result.popover_2);
+                        $(".APIinfo").text(result.APIinfo);
+                        $(".loginfo").text(result.loginfo);
+                        $("#csvdown").text(result.csvdown);
+                        $("#mailSend").text(result.mailSend);
+                        $("#popis2").text(result.popis2);
+                        $(".runoctave").text(result.runoctave);
+                        $(".parameters").text(result['parameters']);
+                        $(".command").text(result.command);
+                        $(".description").text(result['description']);
+                        $(".return").text(result['return']);
+                        $(".returnbody").text(result.returnbody);
+                        $(".example").text(result.example);
+                        $(".response").text(result['response']);
+                        $(".succes").text(result.succes);
+                        $(".fail").text(result.fail);
+                        $(".code").text(result['code']);
+                        $(".exampleA").text(result.exampleA);
+                        $(".getdata").text(result.getdata);
+                        $("#doc").text(result.doc);
+                        $(".height").text(result.height);
+
+                    },
+                    error: function() {
+                        console.log('error');
+                    }
+
+                });
+            };
+
             $("#outputForm").hide();
 
             $("#obstacleHeight").popover({
@@ -208,7 +273,7 @@
                 html: true,
                 trigger: 'manual',
                 content: "<button class='close'>&times</button> " +
-                    "<p class = 'text-center'>Výška prekážky musí byť desatinné alebo celé číslo z rosahu -0.35 až 0.35! <p>"
+                    "<p class = 'text-center' id='popover_1'>Výška prekážky musí byť desatinné alebo celé číslo z rosahu -0.35 až 0.35! <p>"
             });
 
             $("#casDiv").popover({
@@ -221,7 +286,7 @@
                 html: true,
                 trigger: 'manual',
                 content: "<button class='close'>&times</button> " +
-                    "<p class = 'text-center'>Príkaz nie je zadaný v správnom formáte ! <p>"
+                    "<p class = 'text-center' id='popover_2'>Príkaz nie je zadaný v správnom formáte ! <p>"
             });
 
             $('#obstacleHeight').bind('input propertychange focusin', function() {
@@ -243,6 +308,7 @@
             });
 
             $("#submitCasFormButton").click(function() {
+                console.log("som tu");
                 let req = $("#requirement").val();
                 $.ajax({
                     type: 'GET',
@@ -279,13 +345,15 @@
 
                     },
                     error: function(XMLHttpRequest, textStatus, errorThrown) {
+                        console.log("error")
                         console.log(XMLHttpRequest.status);
                     }
                 });
             });
 
 
-            $("#submitPlotButton").click(function() {
+            $("#submitPlotButton").click(function(e) {
+                e.preventDefault();
                 callGraph(null);
 
             });
@@ -333,12 +401,33 @@
                 });
             });
 
+            function delay(milisec){
+                return new Promise(resolve => {
+                    setTimeout(resolve, milisec);
+                });
+            }
+
+            async function execPlot(Y_axis_wheel, Y_axis_car, obstacleHeight, shift){
+                let y_time = 0;
+                for (let i = 0; i < Y_axis_wheel.length; i++) {
+                    if (i < shift) {
+                        test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i], 0, 0);
+                    } else {
+                        test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i],
+                            Y_axis_wheel[i - shift], Y_axis_car[i - shift]);
+                    }
+
+                    addData(myChart, y_time, Y_axis_wheel[i], Y_axis_car[i]);
+                    y_time = roundToTwo(y_time + 0.01);
+                    await delay(speed);
+                }
+            }
+
             function callGraph(name, r) {
                 if (submited == 1) {
                     saveCommand();
                 }
                 let ok = false;
-                let shift = 190;
                 let obstacleHeight = $("#obstacleHeight").val();
                 if (r != null) {
                     obstacleHeight = r;
@@ -357,6 +446,9 @@
                 }
 
                 if (ok) {
+                    $([document.documentElement, document.body]).animate({
+                        scrollTop: $("#animationForm").offset().top
+                    }, 100);
                     $.ajax({
                         type: 'GET',
                         data: {
@@ -368,6 +460,7 @@
                         success: function(result) {
                             removeData(myChart);
                             clearCanvas();
+                            let shift = 190;
                             let X_axis = result.dataT;
                             let Y_axis_car = result.dataY;
                             let Y_axis_wheel = getCarY(Y_axis_car.length, result.dataX);
@@ -375,59 +468,18 @@
                             if ($('#checkBoxPlot').is(':checked') && $('#checkBoxAnimation').is(':checked')) {
                                 $("#animationDiv").removeClass("d-none");
                                 $("#chartDiv").removeClass("d-none");
-                                for (let i = 0; i < Y_axis_wheel.length; i++) {
-                                    (function(index) {
-                                        timeoutFunc = setTimeout(function() {
-                                            if (i < shift) {
-                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i], 0, 0);
-                                            } else {
-                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i],
-                                                    Y_axis_wheel[i - shift], Y_axis_car[i - shift]);
-                                            }
-
-                                            addData(myChart, y_time, Y_axis_wheel[i], Y_axis_car[i]);
-                                            y_time = roundToTwo(y_time + 0.01);
-                                        }, X_axis[i] / 10);
-                                        // }, X_axis[i]*10000);
-                                    })(i);
-                                }
                             } else if ($('#checkBoxPlot').is(':checked')) {
                                 $("#animationDiv").addClass("d-none");
                                 $("#chartDiv").removeClass("d-none");
-
-                                for (let i = 0; i < Y_axis_wheel.length; i++) {
-                                    (function(index) {
-                                        timeoutFunc = setTimeout(function() {
-                                            addData(myChart, y_time, Y_axis_wheel[i], Y_axis_car[i]);
-                                            y_time = roundToTwo(y_time + 0.01);
-                                        }, X_axis[i] / 10);
-                                        // }, X_axis[i]*10000);
-                                    })(i);
-                                }
                             } else if ($('#checkBoxAnimation').is(':checked')) {
                                 $("#animationDiv").removeClass("d-none");
                                 $("#chartDiv").addClass("d-none");
 
-                                for (let i = 0; i < Y_axis_wheel.length; i++) {
-                                    (function(index) {
-                                        timeoutFunc = setTimeout(function() {
-                                            if (i < shift) {
-                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i], 0, 0);
-                                            } else {
-                                                test(obstacleHeight, y_time, Y_axis_wheel[i], Y_axis_car[i],
-                                                    Y_axis_wheel[i - shift], Y_axis_car[i - shift]);
-                                            }
-                                            addData(myChart, y_time, Y_axis_wheel[i], Y_axis_car[i]);
-                                            y_time = roundToTwo(y_time + 0.01);
-                                        }, X_axis[i] / 10);
-                                        // }, X_axis[i]*10000);
-                                    })(i);
-                                }
                             } else {
                                 $("#animationDiv").addClass("d-none");
                                 $("#chartDiv").addClass("d-none");
                             }
-                            y_time = 0;
+                            execPlot(Y_axis_wheel, Y_axis_car, obstacleHeight, shift);
 
                         },
                         error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -459,7 +511,7 @@
 
 
         window.addEventListener("beforeunload", function(e) {
-            var fd = new FormData();
+            let fd = new FormData();
             fd.append('ajax_data', nickaname);
             let data = {
                 nickname: nickaname
@@ -472,29 +524,31 @@
 
 <body id="page-top">
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
+        <div class="float-start px-5">
+            <div class="btn-group" id = "div_lang">
+                <input type="radio" class="btn-check radiobtngroup" name="options" id="sk_lang" autocomplete="off" checked/>
+                <label class="btn btn-secondary" for="sk_lang">SK</label>
+
+                <input type="radio" class="btn-check radiobtngroup" name="options" id="en_lang" autocomplete="off" />
+                <label class="btn btn-secondary" for="en_lang">EN</label>
+            </div>
+        </div>
         <div class="container">
-            <a class="navbar-brand"><?php echo $lang['final_ass'] ?></a>
+            <a class="navbar-brand final_ass"></a>
             <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded"
                     type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive"
                     aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 Menu
                 <i class="fas fa-bars"></i>
             </button>
-            <form method="get">
-                <select id="lang" name="lang">
-                    <option value="sk">Slovak</option>
-                    <option value="en">English</option>
-                </select>
-                <button type="submit"></button>
-            </form>
             <div class="collapse navbar-collapse" id="navbarResponsive">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#about"><?php echo $lang['about'] ?>  </a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formCasContainer"><?php echo $lang['form'] ?></a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#plotContainer"><?php echo $lang['funkcionality'] ?></a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#formName"><?php echo $lang['track_experiments'] ?></a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#logContainer"><?php echo $lang['loginfo']?></a></li>
-                    <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded" href="#apiDocContainer"><?php echo $lang['APIinfo']?></a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded small aboutHeader" href="#about"></a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded small" href="#formCasContainer" id="form" ></a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded small" href="#plotContainer" id="funkcionality"></a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded small track_experiments" href="#formName"></a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded small loginfo" href="#logContainer"></a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-2 px-0 px-lg-3 rounded small APIinfo" href="#apiDocContainer"></a></li>
                 </ul>
             </div>
         </div>
@@ -502,8 +556,8 @@
 
     <section class="page-section bg-primary text-white mb-0" id="about">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-white pt-5" id="nadpis"><?php echo $lang['about'] ?></h2>
-            <h3 class="page-section-heading text-center text-uppercase  pt-5"id="hide"><?php echo $lang['about'] ?></h3>
+            <h2 class="page-section-heading text-center text-uppercase text-white pt-5 aboutHeader" id="nadpis"></h2>
+            <h3 class="page-section-heading text-center text-uppercase pt-5 aboutHeader" id="hide"></h3>
             <div class="divider-custom divider-light">
                 <div class="divider-custom-line"></div>
                 <div class="divider-custom-icon">
@@ -513,7 +567,7 @@
             </div>
             <div class="row">
                 <div class="col-lg-4 ms-auto">
-                    <p class="lead">?>
+                    <p class="lead">
                         Donec non arcu at turpis consequat fringilla. Cras vitae augue nulla.
                         Phasellus tellus turpis, molestie eget mi sagittis, rutrum faucibus ante. Duis malesuada ipsum dolor,
                         pharetra tristique lectus condimentum eu. Quisque rutrum ornare nibh. Curabitur iaculis cursus dui,
@@ -521,7 +575,7 @@
                     </p>
                 </div>
                 <div class="col-lg-4 me-auto">
-                    <p class="lead"><?php echo $lang['popis2']?>
+                    <p class="lead" id="popis2">
                     </p>
                 </div>
             </div>
@@ -531,16 +585,16 @@
 
     <section class="page-section bg-white text-white mb-0" id="formCasContainer">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['form_CAS']?></h2>
+                <h2 class="page-section-heading text-center text-uppercase text-secondary" id="form_CAS"></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="casForm">
                         <div class="form-floating mb-3" id = "casDiv">
                             <textarea class="form-control" id="requirement" type="text"
                                       placeholder="Sem napíšte príkaz ..." style="height: 6rem"></textarea>
-                            <label for="requirement"><?php echo $lang['first_placeholder']?></label>
-                        </div>
-                        <button class="btn btn-primary btn-lg" id="submitCasFormButton" type="button"><?php echo $lang['calculate']?></button>
+                                <label for="requirement" id="first_placeholder"></label>
+                        </div>s
+                        <button class="btn btn-primary btn-lg" id="submitCasFormButton" type="button"><span id ="calculate"></span></button>
                     </form>
                 </div>
                 <div class="col-lg-8 col-xl-7 pt-5 lead" id="outputFormContainer">
@@ -551,11 +605,9 @@
         </div>
     </section>
 
-
-
     <section class="page-section bg-white text-white mb-0 m-5" id="plotContainer" >
         <div class = "container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['anim_chart']?></h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary" id="anim_chart"></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="animationForm" class="text-sm">
@@ -564,26 +616,26 @@
                             <input class="form-control" id="obstacleHeight"
                                    type="text"
                                       placeholder="Sem napíšte výšku prekážky ..."/>
-                            <label for="obstacleHeight"><?php echo $lang['second_placeholder']?></label>
+                            <label for="obstacleHeight" id="second_placeholder"></label>
 
                             <div class="d-flex flex-row justify-content-start align-items-center pt-4">
                                 <div class="form-check me-5 ">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxPlot" checked>
                                     <label class="form-check-label" for="checkBoxPlot" id="checkBoxLabel1">
-                                        <small><?php echo $lang['make_chart']?></small>
+                                        <small id="make_chart"></small>
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxAnimation">
+                                    <input class="form-check-input" type="checkbox" value="" id="checkBoxAnimation" checked>
                                     <label class="form-check-label" for="checkBoxAnimation" id="checkBoxLabel1">
-                                        <small><?php echo $lang['make_animation']?></small>
+                                        <small id="make_animation"></small>
                                     </label>
                                 </div>
 
                             </div>
                         </div>
 
-                        <button class="btn btn-primary btn-lg" id="submitPlotButton" type="button"><?php echo $lang['send'] ?></button>
+                        <button class="btn btn-primary btn-lg" id="submitPlotButton"><span id="send"></span></button>
                     </form>
 
                     <div class="mt-5 row justify-content-center">
@@ -599,18 +651,18 @@
         </div>
     </section>
 
-    <section class="page-section bg-white text-white mb-0" id="formCasContainer">
+    <section class="page-section bg-white text-white mb-0" id="formName">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['track_experiments'] ?></h2>
+            <h2 class="page-section-heading text-center text-uppercase text-secondary track_experiments"></h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8 col-xl-7 pt-5">
                     <form id="nicknameForm">
                         <div class="form-floating mb-3" id="nicknameDiv">
                             <textarea class="form-control" id="nickname" type="text" placeholder="Sem napíšte nickname ..." style="height: 6rem"></textarea>
-                            <label for="requirement"><?php echo $lang['nick'] ?></label>
+                            <label for="requirement" id="nick"></label>
                         </div>
 
-                        <button class="btn btn-primary btn-lg" id="submitNickameButton" type="button"><?php echo $lang['add'] ?></button>
+                        <button class="btn btn-primary btn-lg" id="submitNickameButton" type="button"><span id="addButton"></span></button>
                     </form>
                 </div>
                 <div class="col-lg-8 col-xl-7 pt-5 lead" id="outputFormContainerNickname">
@@ -623,16 +675,17 @@
 
     <section class="page-section bg-white text-white mb-0 m-5" id="logContainer">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary"><?php echo $lang['loginfo']?></h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-8 col-xl-7 pt-5">
+            <h2 class="page-section-heading text-center text-uppercase text-secondary loginfo"></h2>
+            <div class="d-flex flex-row justify-content-center pt-5">
+                <div class="flex-column justify-content-between">
 
                     <button class="btn btn-primary btn-lg" id="downloadCsv" type="button"
-                            onclick="location.href='api/export.php';"><?php echo $lang['csvdown']?>
+                            onclick="location.href='api/export.php';"><span id="csvdown"></span>
                     </button>
-                    <br><br>
+
+
                     <button class="btn btn-primary btn-lg" id="sendToMail" type="button"
-                            onclick="location.href='api/email.php';"><?php echo $lang['mailSend']?>
+                            onclick="location.href='api/email.php';"><span id="mailSend"></span>
                     </button>
 
                 </div>
@@ -642,65 +695,108 @@
 
     <section class="page-section bg-white  mb-0 m-5" id="apiDocContainer">
         <div class="container">
-            <h2 class="page-section-heading text-center text-uppercase text-secondary"> <?php echo $lang['APIinfo']?></h2>
-            <div class="row justify-content-center">
-                <div class="col-lg-8 col-xl-7 pt-5">
+            <h2 class="page-section-heading text-center text-uppercase text-secondary APIinfo"></h2>
+            <div class="d-flex flex-row justify-content-center pt-5">
+                <div class="d-flex flex-column justify-content-center">
+                    <div class="p-2">
+                        <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse">
+                            <span class="runoctave"></span>
+                        </button>
 
-                    <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse">
-                        <?php echo $lang['runoctave']?>
-                    </button>
+                        <div class="collapse hide" id="myCollapse">
+                            <h3 id="hide" class="runoctave "></h3>
+                            <div class="card card-body">
+                                <div class="p-2">
+                                    <h4 class="parameters"></h4>
+                                    <div class="command"></div>
+                                    <div>acces_token={token}</div>
+                                </div>
 
-                    <br><br>
+                                <div class="p-2">
+                                    <h4 class="description"></h4>
+                                    <div class="runoctave"></div>
+                                    <div class="return"></div>
+                                    <span class="returnbody"></span><span>: {"ans":"string"}</span>
+                                </div>
 
-                    <div class="collapse hide" id="myCollapse">
-                        <h3 id="hide"><?php echo $lang['runoctave']?></h3>
-                        <div class="card card-body"><h4><?php echo $lang['parameters']?></h4>príkaz={<?php echo $lang['command']?>}<br>acces_token={token}<br>
-                            <h4><?php echo $lang['description']?></h4><?php echo $lang['runoctave']?><br><?php echo $lang['return']?> : JSON<br>
-                            <?php echo $lang['returnbody']?> : {"ans":"string"}
-                            <h4><?php echo $lang['example']?> </h4>/api/?prikaz=1+1&acces_token=kiRkR15MBEypq7Che
-                            <h4><?php echo $lang['response']?> </h4><h6> <?php echo $lang['succes']?></h6><?php echo $lang['code']?> : 200<br> <?php echo $lang['exampleA']?> : {"ans":"\"ans = 2\""}
-                            <h6><?php echo $lang['fail']?></h6><?php echo $lang['code']?> : 404<br> <?php echo $lang['exampleA']?> : "err": {"\"Wrong access token!\""}
+                                <div class="p-2">
+                                    <h4 class="example"></h4>
+                                    <div>/api/?prikaz=1+1&acces_token=kiRkR15MBEypq7Che</div>
+                                </div>
+
+                                <div class="p-2">
+                                    <h4 class="response"></h4>
+                                    <h6 class="succes"></h6>
+                                        <span class="code"></span><span>: 200</span>
+                                        <span class="exampleA"></span><span>: {"ans":"\"ans = 2\""}</span>
+                                    <h6 class="fail"></h6>
+                                        <span class="code"></span><span>: 404</span>
+                                        <span class="exampleA"></span><span>: "err": {"\"Wrong access token!\""}</span>
+                                </div>
+
+                            </div>
                         </div>
+
                     </div>
 
-                    <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse2">
-                        <?php echo $lang['getdata']?>
-                    </button>
-                    <br> <br>
+                   <div class="p-2">
+                       <button type="button" class="btn btn-primary " data-bs-toggle="collapse" data-bs-target="#myCollapse2">
+                           <span class="getdata"></span>
+                       </button>
 
+                       <div class="collapse hide" id="myCollapse2">
+                           <h3 id="hide" class="getdata"></h3>
 
+                           <div class="card card-body">
+                               <div class="p-2">
+                                   <h4 class="parameters"></h4>
+                                   <span>r={</span><span class="height"></span><span>}</span>
+                                   <div>acces_token={token}</div>
+                               </div>
+                               <div class="p-2">
+                                   <h4 class="description"></h4>
+                                   <div class="getdata"></div>
+                                   <div class="return"></div>
+                                   <span class="returnbody"></span><span>: {"dataT":[],"dataX":[],"dataY":[]}</span>
+                               </div>
+                               <div class="p-2">
+                                   <h4 class="example"></h4>
+                                   <div>/api/?r=5.0&acces_token=kiRkR15MBEypq7Che</div>
+                               </div>
 
-                    <div class="collapse hide" id="myCollapse2">
-                        <h3 id="hide"><?php echo $lang['getdata']?></h3>
-                        <div class="card card-body"><h4><?php echo $lang['parameters']?></h4>r={<?php echo $lang['height']?>}<br>acces_token={token}<br>
-                            <h4><?php echo $lang['description']?></h4><?php echo $lang['getdata']?>.<br><?php echo $lang['return']?> : JSON<br>
-                            <?php echo $lang['returnbody']?> : {"dataT":[],"dataX":[],"dataY":[]}
-                            <h4><?php echo $lang['example']?> </h4>/api/?r=5.0&acces_token=kiRkR15MBEypq7Che
-                            <h4><?php echo $lang['response']?></h4><h6><?php echo $lang['succes']?></h6><?php echo $lang['code']?>: 200<br> <?php echo $lang['exampleA']?> :
-                            {"dataT":[],"dataX":[],"dataY":[]}
-                            <h6><?php echo $lang['fail']?></h6><?php echo $lang['code']?> : 404<br> <?php echo $lang['exampleA']?> : "err": {"\"Wrong access token!\""}
-                        </div>
+                               <div class="p-2">
+                                   <h4 class="response"></h4>
+                                   <h6 class="succes"></h6>
+                                   <span class="code"></span><span>: 200</span> <div></div>
+                                   <span class="exampleA"></span><span>: {"dataT":[],"dataX":[],"dataY":[]}</span>
+                                   <h6 class="fail"></h6>
+                                   <span class="code"></span><span>: 404</span>
+                                   <div></div>
+                                   <span class="exampleA"></span><span>: "err": {"\"Wrong access token!\""}</span>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+
+                    <div class="p-2">
+                        <button class="btn btn-primary btn-lg" id="print" type="button"
+                                onclick="window.print()"><span id="doc"></span>
+                        </button>
                     </div>
-
-                    <button class="btn btn-primary btn-lg" id="print" type="button"
-                            onclick="window.print()"><?php echo $lang['doc']?>
-                    </button>
-
 
                 </div>
             </div>
         </div>
     </section>
 
-
     <footer class="footer text-center">
         <div class="container">
-            <p class="text-white"><?php echo $lang['footer_desc']?></p>
+            <p class="text-white" id="footer_desc"></p>
         </div>
     </footer>
 
     <div class="copyright py-4 text-center text-white">
-        <div class="container"><small><?php echo $lang['cp']?></small></div>
+        <div class="container"><small id="cp"></small></div>
     </div>
 </body>
 
