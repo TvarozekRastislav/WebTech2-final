@@ -16,7 +16,8 @@ switch ($_SERVER['REQUEST_METHOD']) {
                                     `date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                                     `command` varchar(535) CHARACTER SET utf8 COLLATE utf8_slovak_ci DEFAULT NULL,
                                     `info` varchar(535) CHARACTER SET utf8 COLLATE utf8_slovak_ci NOT NULL,
-                                    `mistake_info` varchar(535) CHARACTER SET utf8 COLLATE utf8_slovak_ci DEFAULT NULL
+                                    `mistake_info` varchar(535) CHARACTER SET utf8 COLLATE utf8_slovak_ci DEFAULT NULL,
+                                    primary key (id)
                                         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;");
         $stmt0->execute();
         $stmt = $db->prepare("INSERT INTO requirements(command,info,mistake_info)VALUES(:command,:info,:mistake_info)");
