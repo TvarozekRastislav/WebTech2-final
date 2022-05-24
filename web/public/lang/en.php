@@ -17,11 +17,13 @@ $lang=array(
     "footer_desc"=>"This project was created as a result of the final assignment of the subject of web technology.",
     "cp"=>"Copyright © Final exam Webte2 2022",
     "add"=>"Add",
+    "popover_1"=>"Height of the obstacle must be integer or float within values -0.35-0.35 !",
+    "popover_2"=>"The command is not in the correct format!",
     "description"=>"Description",
     "parameters"=>"Parameters",
     "getdata"=>"GET /final/api Get data T,X,Y for animation",
     "runoctave"=>"GET /final/api Run octave command",
-    "command"=>"command",
+    "command"=>"command={command}",
     "returnbody"=>"Return body",
     "return"=>"Returns",
     "example"=>"Example",
@@ -38,3 +40,4 @@ $lang=array(
     "mailSend"=>"Send mail with information",
     "popis2"=>"If you want to watch other users experiments you need to enter your name. You can enter your name on the bottom of the page. Also, if you want other users to be able to watch your experiments, you'll need to enter a name.  To end wathcing another user is required refresh page."
 );
+echo json_encode($lang);
